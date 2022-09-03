@@ -7,22 +7,21 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  makeStyles,
   OutlinedInput,
   Snackbar,
-  styled,
   TextField,
   Typography,
 } from '@mui/material'
 import { useState } from 'react'
 import axios from 'axios'
-import { URL_USER_SVC } from '../configs'
+import { URL_LOGIN_SVC } from '../configs'
 import {
   STATUS_CODE_CREATED,
+  STATUS_CODE_INVALID,
   STATUS_CODE_INVALID_PASSWORD,
   STATUS_CODE_INVALID_USERNAME,
 } from '../constants'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 function LoginPage() {
@@ -55,21 +54,20 @@ function LoginPage() {
     }
 
     const res = await axios
-      .post(URL_USER_SVC, { username, password })
+      .post(URL_LOGIN_SVC, { username, password })
       .catch((err) => {
-        if (err.response.status === STATUS_CODE_INVALID_USERNAME) {
-          setSnackbarTitle('Invalid Username')
-          setSnackbarMsg('This username does not exist!')
-        } else if (err.response.status === STATUS_CODE_INVALID_PASSWORD) {
-          setSnackbarTitle('Invalid Password')
-          setSnackbarMsg('Password is incorrect!')
+        if (err.response.status === STATUS_CODE_INVALID) {
+          setSnackbarTitle(err.response.title)
+          setSnackbarMsg(err.response.message)
         } else {
           setSnackbarTitle('Unknown Error')
           setSnackbarMsg('Please try again.')
+          console.log('err.response :>> ', err.response)
         }
       })
     if (res && res.status === STATUS_CODE_CREATED) {
       navigate('/') //TODO: change this
+      //TODO: store in cookie
     }
   }
 
