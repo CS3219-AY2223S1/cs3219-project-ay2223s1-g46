@@ -1,6 +1,7 @@
 import UserModel from './user-model.js';
 import 'dotenv/config'
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 //Set up mongoose connection
 import mongoose from 'mongoose';
@@ -25,6 +26,32 @@ export async function createUser({username, password}) {
 }
 
 export async function checkUserExist(username) {
+  const user = await UserModel.findOne({username})
+
+  if (user) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export async function getUser(username) {
   return UserModel.findOne({username})
 }
 
+export async function compareHash(username, password) {
+  const user = await UserModel.findOne({username})
+  if (!user) {
+    return false
+  }
+  const res = await bcrypt.compare(password, user.passwordHash)
+  return res
+}
+
+export async function createJWT(user) {
+  const userForToken = {
+    username: user.username,
+  }
+  const token = jwt.sign(userForToken, process.env.SECRET)
+  return token
+}
