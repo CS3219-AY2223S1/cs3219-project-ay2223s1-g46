@@ -1,16 +1,16 @@
 import {
+  Alert,
+  AlertTitle,
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   IconButton,
   InputAdornment,
   InputLabel,
+  makeStyles,
   OutlinedInput,
+  Snackbar,
+  styled,
   TextField,
   Typography,
 } from '@mui/material'
@@ -22,52 +22,82 @@ import {
   STATUS_CODE_INVALID_PASSWORD,
   STATUS_CODE_INVALID_USERNAME,
 } from '../constants'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [usernameMissing, setUsernameMissing] = useState(false)
-  const [passwordMissing, setPasswordMissing] = useState(false)
+  const [usernameMissing, setUsernameMissing] = useState(true)
+  const [passwordMissing, setPasswordMissing] = useState(true)
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [dialogTitle, setDialogTitle] = useState('')
-  const [dialogMsg, setDialogMsg] = useState('')
-  const [isSignupSuccess, setIsSignupSuccess] = useState(false)
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
+  const [snackbarTitle, setSnackbarTitle] = useState('')
+  const [snackbarMsg, setSnackbarMsg] = useState('')
+
+  const navigate = useNavigate()
 
   const handleLogin = async () => {
-    setIsSignupSuccess(false)
+    if (username === '') {
+      setUsernameMissing(true)
+    }
+
+    if (password === '') {
+      setPasswordMissing(true)
+    }
+
+    if (!username || !password) {
+      setIsSnackbarOpen(true)
+      setSnackbarTitle('Missing Field(s)')
+      setSnackbarMsg('Please fill in your username and password.')
+      return
+    }
+
     const res = await axios
       .post(URL_USER_SVC, { username, password })
       .catch((err) => {
         if (err.response.status === STATUS_CODE_INVALID_USERNAME) {
-          setErrorDialog('This username does not exist!')
+          setSnackbarTitle('Invalid Username')
+          setSnackbarMsg('This username does not exist!')
         } else if (err.response.status === STATUS_CODE_INVALID_PASSWORD) {
-          setErrorDialog('Password is incorrect!')
+          setSnackbarTitle('Invalid Password')
+          setSnackbarMsg('Password is incorrect!')
         } else {
-          setErrorDialog('Unknown error: Please try again later.')
+          setSnackbarTitle('Unknown Error')
+          setSnackbarMsg('Please try again.')
         }
       })
     if (res && res.status === STATUS_CODE_CREATED) {
-      setSuccessDialog('Account successfully created')
-      setIsSignupSuccess(true)
+      navigate('/') //TODO: change this
     }
   }
 
-  const closeDialog = () => setIsDialogOpen(false)
-
-  const setSuccessDialog = (msg) => {
-    setIsDialogOpen(true)
-    setDialogTitle('Success')
-    setDialogMsg(msg)
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setIsSnackbarOpen(false)
   }
 
-  const setErrorDialog = (msg) => {
-    setIsDialogOpen(true)
-    setDialogTitle('Error')
-    setDialogMsg(msg)
+  const handleUsernameChange = (e) => {
+    e.preventDefault()
+    setUsername(e.target.value)
+    if (e.target.value === '') {
+      setUsernameMissing(true)
+      return
+    }
+    setUsernameMissing(false)
+  }
+
+  const handlePasswordChange = (e) => {
+    e.preventDefault()
+    setPassword(e.target.value)
+    if (e.target.value === '') {
+      setPasswordMissing(true)
+      return
+    }
+    setPasswordMissing(false)
   }
 
   return (
@@ -78,27 +108,33 @@ function LoginPage() {
       <TextField
         label="Username"
         variant="outlined"
+        color={usernameMissing ? 'error' : 'primary'}
         value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        onChange={handleUsernameChange}
         sx={{ marginBottom: '1rem' }}
         autoFocus
         required
       />
       <FormControl sx={{ marginBottom: '2rem' }}>
-        <InputLabel htmlFor="outlined-password-input" required>
+        <InputLabel
+          htmlFor="outlined-password-input"
+          color={passwordMissing ? 'error' : 'primary'}
+          required
+        >
           Password
         </InputLabel>
         <OutlinedInput
           label="Password"
+          color={passwordMissing ? 'error' : 'primary'}
           id="outlined-password-input"
           type={showPassword ? 'text' : 'password'}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={(e) => setShowPassword(!showPassword)}
+                onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
                   <Visibility></Visibility>
@@ -115,21 +151,18 @@ function LoginPage() {
           Login
         </Button>
       </Box>
-      <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{dialogMsg}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          {isSignupSuccess ? (
-            <Button component={Link} to="/login">
-              Log in
-            </Button>
-          ) : (
-            <Button onClick={closeDialog}>Done</Button>
-          )}
-        </DialogActions>
-      </Dialog>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert severity="error" onClose={handleCloseSnackbar}>
+          <AlertTitle>{snackbarTitle}</AlertTitle>
+          {snackbarMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }
