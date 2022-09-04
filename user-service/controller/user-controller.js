@@ -45,11 +45,15 @@ export async function loginUser(req, res) {
                 return res.status(401).json({title:'Invalid password', message: 'The password does not match this user!'})
             }
 
-            const user = await _getUser(username)
-            const token = await _createJWT(user)
+            const user = await _getUser(username);
+            const token = await _createJWT(user);
+
+            res.cookie('token', token, { httpOnly: true});
+            res.json({ token, username: user.username})
+
 
             console.log(`Logged in with username ${username} successfully!`)
-            return res.status(200).send({ token, username: user.username});
+            return res.status(200)
             
         } else {
             return res.status(400).json({message: 'Username and/or Password are missing!'});
@@ -57,5 +61,18 @@ export async function loginUser(req, res) {
     } catch (err) {
         console.log(err)
         return res.status(500).json({message: 'Database failure when logging in user!'})
+    }
+}
+
+export async function logoutUser(req, res) {
+    try {
+        // remove cookie if user logs out
+        return res
+        .clearCookie("token")
+        .status(200)
+        .json({ message: "Successfully logged out!"});
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({message: 'Failure when logging out user!'})
     }
 }
