@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from "react";
 import { Navigate, useNavigate } from "react-router";
+import './css/Timer.css';
 
 function Timer() {
     const intervalRef = useRef(null);
@@ -26,14 +27,12 @@ function Timer() {
         }
     
     function clearTimer(endTime) {
-        setTimer("30");
+        setTimer("10");
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
         const id = setInterval(() => {
             startTimer(endTime);
-            //console.log(Date.now());
-            //console.log(endTime.getTime())
             if (endTime.getTime() <= Date.now()) {
                 navigate(`/problems`);
             }
@@ -43,7 +42,7 @@ function Timer() {
 
     function getDeadlineTime() {
         let deadline = new Date();
-        deadline.setSeconds(deadline.getSeconds() + 30);
+        deadline.setSeconds(deadline.getSeconds() + 10);
         return deadline;
     }
 
@@ -57,7 +56,7 @@ function Timer() {
     },[]);
 
     return (
-    <div className = "Timer">
+    <div className = "timer">
         {timer}
     </div>
     );
