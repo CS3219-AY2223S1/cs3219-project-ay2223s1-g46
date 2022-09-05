@@ -20,10 +20,17 @@ const httpServer = createServer(app)
 const io = new Server(httpServer, { /* options */ });
 io.on("connection", (socket) => {
     console.log("Logging socket connection")
-    socket.on("match", (username) => {
+    socket.on("match", async (username) => {
         console.log("Creating for: " + username)
-        var result = ormCreatePendingMatch(username)
-        console.log(result)
+        try {
+            await ormCreatePendingMatch(username)
+            socket.removeAllListeners("match");
+            console.log("Match in progress")
+            socket.emit("match_result", "Match in progress"); //TODO: Figure out why emit doesn't work
+        } catch (err) { //Catch block doesn't actually work. //TODO: Test this by submitting 2 names at the same time
+            console.error(err);
+            socket.emit("match_result", "Fail, try again"); //TODO: Figure out why emit doesn't work
+        }
     });
 });
 
