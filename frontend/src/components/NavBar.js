@@ -12,8 +12,9 @@ import {
 } from '@mui/material/';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link} from "react-router-dom";
+import './css/NavBar.css';
 
-const pages = ["contribute", "problems", "login", "signup"];
+const pages = ["home","contribute", "problems", "login", "signup"];
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -38,7 +39,13 @@ const NavBar = () => {
             justifyContent: "space-between"
           }}
         >
+          <Box
+          component="img"
+          className="logo"
+          src="/logo192.png"
+          />
           <Typography
+            className="appName"
             variant="h2"
             noWrap
             component="div"

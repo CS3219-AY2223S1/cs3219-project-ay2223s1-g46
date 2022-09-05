@@ -23,7 +23,7 @@ export default function ProblemCard({difficulty,color}) {
             {difficulty}
             </Typography>
         </CardContent>
-        <CardActions sx={{margin:4}}>
+        <CardActions sx={{margin:6}}>
             <Button variant="contained" endIcon ={<CodeIcon/>}size="medium" onClick={matchDifficulty}>Match</Button>
         </CardActions>
         </Card>
