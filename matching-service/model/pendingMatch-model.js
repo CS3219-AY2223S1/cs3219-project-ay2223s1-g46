@@ -5,6 +5,16 @@ let PendingMatchModelSchema = new Schema({
         type: String,
         required: true,
         unique: true,
+    },
+    socket_id: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    difficulty: {
+        type: String,
+        required: true,
+        unique: false
     }
 })
 

@@ -14,6 +14,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 export async function createPendingMatch(params) { 
   return new PendingMatchModel(params)
 }
+export async function findOnePendingMatchAndDelete(params) {
+  return PendingMatchModel.findOneAndDelete(params)
+}
 export async function registerListener(callback) {
   PendingMatchModel.watch().on('change', callback);
 }

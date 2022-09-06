@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from "socket.io";
-import { ormCreatePendingMatch, ormRegisterAddListener } from "./model/pendingMatch-orm.js"
+import { ormCreatePendingMatch, ormAtomicFindFirstPendingMatchAndDelete, ormRegisterAddListener } from "./model/pendingMatch-orm.js"
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -20,16 +20,26 @@ const httpServer = createServer(app)
 const io = new Server(httpServer, { /* options */ });
 io.on("connection", (socket) => {
     console.log("Logging socket connection")
-    socket.on("match", async (username) => {
-        console.log("Creating for: " + username)
-        try {
-            await ormCreatePendingMatch(username)
-            socket.removeAllListeners("match");
-            console.log("Match in progress")
-            socket.emit("match_result", "Match in progress"); //TODO: Figure out why emit doesn't work
-        } catch (err) { //Catch block doesn't actually work. //TODO: Test this by submitting 2 names at the same time
-            console.error(err);
-            socket.emit("match_result", "Fail, try again"); //TODO: Figure out why emit doesn't work
+    socket.on("match", async (username, difficulty) => {
+        console.log("Creating for: " + username + "; Difficulty: " + difficulty)
+        var avaliableMatch = await ormAtomicFindFirstPendingMatchAndDelete(
+            { difficulty: {$eq: difficulty} } //explict $eq to prevent injection attack
+        );
+        console.log(avaliableMatch)
+        if (avaliableMatch) {
+            //TODO: Create room and message other socket
+            //TODO: Make sure other socket acks
+        } else {//Match not found
+            try {
+                await ormCreatePendingMatch(username, socket.id, difficulty)
+                socket.removeAllListeners("match");
+                console.log("Match in progress")
+                socket.emit("match_result", "Match in progress");
+                //TODO: Add timer to expire and take back database record
+            } catch (err) { //Catch block doesn't actually work. //TODO: Test this by submitting 2 names at the same time
+                console.error(err);
+                socket.emit("match_result", "Fail, try again");
+            }
         }
     });
 });
@@ -50,3 +60,4 @@ ormRegisterAddListener(change => { //This requires replica sets? //TODO: Fix thi
 */
 
 httpServer.listen(8001);
+console.log("Startup complete")
