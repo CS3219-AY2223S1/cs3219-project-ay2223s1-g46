@@ -25,9 +25,8 @@ io.on("connection", (socket) => {
         var avaliableMatch = await ormAtomicFindFirstPendingMatchAndDelete(
             { difficulty: {$eq: difficulty} } //explict $eq to prevent injection attack
         );
-        console.log(avaliableMatch)
-        if (avaliableMatch) {
-            //TODO: Create room and message other socket
+        if (avaliableMatch) { //TODO: Test difficulty filtering
+            io.to(avaliableMatch.socket_id).emit("test", socket.id) //TODO: Make this send to the server side socket, not the client
             //TODO: Make sure other socket acks
         } else {//Match not found
             try {
@@ -36,6 +35,7 @@ io.on("connection", (socket) => {
                 console.log("Match in progress")
                 socket.emit("match_result", "Match in progress");
                 //TODO: Add timer to expire and take back database record
+                //TODO: Figure out how to receive match from other person
             } catch (err) { //Catch block doesn't actually work. //TODO: Test this by submitting 2 names at the same time
                 console.error(err);
                 socket.emit("match_result", "Fail, try again");
