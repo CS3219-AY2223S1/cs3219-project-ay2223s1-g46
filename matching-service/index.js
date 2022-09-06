@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from "socket.io";
-import { ormCreatePendingMatch } from "./model/pendingMatch-orm.js"
+import { ormCreatePendingMatch, ormRegisterAddListener } from "./model/pendingMatch-orm.js"
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -34,5 +34,19 @@ io.on("connection", (socket) => {
     });
 });
 
+/*
+//TODO: Get back to this in a future refactoring, to prevent race condition.
+//Either get this on a listener, or a repeated timer of about 10s. 
+//Race condition in question is "write skew", needs "SERIALIZABLE ISOLATION" to prevent
+//  See: https://www.cockroachlabs.com/blog/what-write-skew-looks-like/
+
+//TODO: Add listener to, on finding potential match, messages the socket that can be matched
+ormRegisterAddListener(change => { //This requires replica sets? //TODO: Fix this
+    if (change.operationType = "create") {//TODO: check if this condition is correct
+        //TODO: Add function to find first pair, based on who got added
+    }
+})
+
+*/
 
 httpServer.listen(8001);
