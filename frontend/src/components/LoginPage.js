@@ -15,12 +15,7 @@ import {
 import { useState } from 'react'
 import axios from 'axios'
 import { URL_LOGIN_SVC } from '../configs'
-import {
-  STATUS_CODE_CREATED,
-  STATUS_CODE_INVALID,
-  STATUS_CODE_INVALID_PASSWORD,
-  STATUS_CODE_INVALID_USERNAME,
-} from '../constants'
+import { STATUS_CODE_CREATED, STATUS_CODE_INVALID } from '../constants'
 import { useNavigate } from 'react-router-dom'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 
