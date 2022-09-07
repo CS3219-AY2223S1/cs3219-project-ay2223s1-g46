@@ -5,8 +5,6 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { ThemeProvider } from '@mui/system'
 import theme from './theme'
-import { BrowserRouter } from 'react-router-dom'
-import { createRoot } from 'react-dom/client'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
