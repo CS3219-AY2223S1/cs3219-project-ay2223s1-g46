@@ -16,8 +16,11 @@ import { useState } from "react"
 import axios from "axios"
 import { URL_LOGIN_SVC } from "../configs"
 import { STATUS_CODE_CREATED, STATUS_CODE_INVALID } from "../constants"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
+import "./css/LoginSignUpRedirectLink.css"
+
+// TODO: make responsive if needed (inputs get squashed for now)
 
 const LoginPage = () => {
   const [username, setUsername] = useState("")
@@ -62,7 +65,6 @@ const LoginPage = () => {
       })
     if (res && res.status === STATUS_CODE_CREATED) {
       navigate("/") //TODO: change this
-      //TODO: store in cookie
     }
   }
 
@@ -94,68 +96,115 @@ const LoginPage = () => {
   }
 
   return (
-    <Box display={"flex"} flexDirection={"column"} width={"30%"}>
-      <Typography variant={"h3"} marginBottom={"2rem"}>
-        Login
-      </Typography>
-      <TextField
-        label="Username"
-        variant="outlined"
-        color={usernameMissing ? "error" : "primary"}
-        value={username}
-        onChange={handleUsernameChange}
-        sx={{ marginBottom: "1rem" }}
-        autoFocus
-        required
-      />
-      <FormControl sx={{ marginBottom: "2rem" }}>
-        <InputLabel
-          htmlFor="outlined-password-input"
-          color={passwordMissing ? "error" : "primary"}
-          required
-        >
-          Password
-        </InputLabel>
-        <OutlinedInput
-          label="Password"
-          color={passwordMissing ? "error" : "primary"}
-          id="outlined-password-input"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={handlePasswordChange}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <Visibility></Visibility>
-                ) : (
-                  <VisibilityOff></VisibilityOff>
-                )}
-              </IconButton>
-            </InputAdornment>
-          }
-        ></OutlinedInput>
-      </FormControl>
-      <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
-        <Button variant={"contained"} onClick={handleLogin} disableElevation>
-          Login
-        </Button>
-      </Box>
-
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
+    <Box
+      display={"flex"}
+      flexDirection={"column"}
+      alignItems={"center"}
+      justifyContent={"center"}
+    >
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        gap={1}
+        py={10}
+        px={6}
+        maxWidth={"40%"}
       >
-        <Alert severity="error" onClose={handleCloseSnackbar}>
-          <AlertTitle>{snackbarTitle}</AlertTitle>
-          {snackbarMsg}
-        </Alert>
-      </Snackbar>
+        <Typography textAlign={"center"} variant={"h3"} marginBottom={"2rem"}>
+          Login
+        </Typography>
+        <Box
+          sx={{ boxShadow: 2, borderRadius: "12px" }}
+          padding={6}
+          display="flex"
+          flexDirection={"column"}
+          gap={1}
+        >
+          <TextField
+            label="Username"
+            variant="outlined"
+            color={usernameMissing ? "error" : "primary"}
+            size="small"
+            value={username}
+            onChange={handleUsernameChange}
+            sx={{ marginBottom: "1rem" }}
+            autoFocus
+            required
+          />
+          <FormControl sx={{ marginBottom: "2rem" }}>
+            <InputLabel
+              htmlFor="outlined-password-input"
+              color={passwordMissing ? "error" : "primary"}
+              size="small"
+              required
+            >
+              Password
+            </InputLabel>
+            <OutlinedInput
+              label="Password"
+              color={passwordMissing ? "error" : "primary"}
+              id="outlined-password-input"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              size="small"
+              onChange={handlePasswordChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    size="small"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <Visibility></Visibility>
+                    ) : (
+                      <VisibilityOff></VisibilityOff>
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+            ></OutlinedInput>
+          </FormControl>
+          <Box display={"flex"} flexDirection={"column"} marginTop={2}>
+            <Button
+              variant={"contained"}
+              onClick={handleLogin}
+              disableElevation
+            >
+              Login
+            </Button>
+          </Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            marginTop={2}
+            alignItems="center"
+          >
+            <Typography
+              textAlign={"center"}
+              variant="subtitle2"
+              fontStyle={"italic"}
+              className="redirectText"
+            >
+              Don't have an account?
+            </Typography>
+            <NavLink to={"/signup"} className="redirectLink">
+              SIGN UP
+            </NavLink>
+          </Box>
+        </Box>
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={isSnackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert severity="error" onClose={handleCloseSnackbar}>
+            <AlertTitle>{snackbarTitle}</AlertTitle>
+            {snackbarMsg}
+          </Alert>
+        </Snackbar>
+      </Box>
     </Box>
   )
 }
