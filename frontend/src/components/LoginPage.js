@@ -11,40 +11,40 @@ import {
   Snackbar,
   TextField,
   Typography,
-} from '@mui/material'
-import { useState } from 'react'
-import axios from 'axios'
-import { URL_LOGIN_SVC } from '../configs'
-import { STATUS_CODE_CREATED, STATUS_CODE_INVALID } from '../constants'
-import { useNavigate } from 'react-router-dom'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+} from "@mui/material"
+import { useState } from "react"
+import axios from "axios"
+import { URL_LOGIN_SVC } from "../configs"
+import { STATUS_CODE_CREATED, STATUS_CODE_INVALID } from "../constants"
+import { useNavigate } from "react-router-dom"
+import { Visibility, VisibilityOff } from "@mui/icons-material"
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [usernameMissing, setUsernameMissing] = useState(true)
   const [passwordMissing, setPasswordMissing] = useState(true)
 
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
-  const [snackbarTitle, setSnackbarTitle] = useState('')
-  const [snackbarMsg, setSnackbarMsg] = useState('')
+  const [snackbarTitle, setSnackbarTitle] = useState("")
+  const [snackbarMsg, setSnackbarMsg] = useState("")
 
   const navigate = useNavigate()
 
   const handleLogin = async () => {
-    if (username === '') {
+    if (username === "") {
       setUsernameMissing(true)
     }
 
-    if (password === '') {
+    if (password === "") {
       setPasswordMissing(true)
     }
 
     if (!username || !password) {
       setIsSnackbarOpen(true)
-      setSnackbarTitle('Missing Field(s)')
-      setSnackbarMsg('Please fill in your username and password.')
+      setSnackbarTitle("Missing Field(s)")
+      setSnackbarMsg("Please fill in your username and password.")
       return
     }
 
@@ -55,19 +55,19 @@ const LoginPage = () => {
           setSnackbarTitle(err.response.title)
           setSnackbarMsg(err.response.message)
         } else {
-          setSnackbarTitle('Unknown Error')
-          setSnackbarMsg('Please try again.')
-          console.log('err.response :>> ', err.response)
+          setSnackbarTitle("Unknown Error")
+          setSnackbarMsg("Please try again.")
+          console.log("err.response :>> ", err.response)
         }
       })
     if (res && res.status === STATUS_CODE_CREATED) {
-      navigate('/') //TODO: change this
+      navigate("/") //TODO: change this
       //TODO: store in cookie
     }
   }
 
   const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return
     }
     setIsSnackbarOpen(false)
@@ -76,7 +76,7 @@ const LoginPage = () => {
   const handleUsernameChange = (e) => {
     e.preventDefault()
     setUsername(e.target.value)
-    if (e.target.value === '') {
+    if (e.target.value === "") {
       setUsernameMissing(true)
       return
     }
@@ -86,7 +86,7 @@ const LoginPage = () => {
   const handlePasswordChange = (e) => {
     e.preventDefault()
     setPassword(e.target.value)
-    if (e.target.value === '') {
+    if (e.target.value === "") {
       setPasswordMissing(true)
       return
     }
@@ -94,33 +94,33 @@ const LoginPage = () => {
   }
 
   return (
-    <Box display={'flex'} flexDirection={'column'} width={'30%'}>
-      <Typography variant={'h3'} marginBottom={'2rem'}>
+    <Box display={"flex"} flexDirection={"column"} width={"30%"}>
+      <Typography variant={"h3"} marginBottom={"2rem"}>
         Login
       </Typography>
       <TextField
         label="Username"
         variant="outlined"
-        color={usernameMissing ? 'error' : 'primary'}
+        color={usernameMissing ? "error" : "primary"}
         value={username}
         onChange={handleUsernameChange}
-        sx={{ marginBottom: '1rem' }}
+        sx={{ marginBottom: "1rem" }}
         autoFocus
         required
       />
-      <FormControl sx={{ marginBottom: '2rem' }}>
+      <FormControl sx={{ marginBottom: "2rem" }}>
         <InputLabel
           htmlFor="outlined-password-input"
-          color={passwordMissing ? 'error' : 'primary'}
+          color={passwordMissing ? "error" : "primary"}
           required
         >
           Password
         </InputLabel>
         <OutlinedInput
           label="Password"
-          color={passwordMissing ? 'error' : 'primary'}
+          color={passwordMissing ? "error" : "primary"}
           id="outlined-password-input"
-          type={showPassword ? 'text' : 'password'}
+          type={showPassword ? "text" : "password"}
           value={password}
           onChange={handlePasswordChange}
           endAdornment={
@@ -139,14 +139,14 @@ const LoginPage = () => {
           }
         ></OutlinedInput>
       </FormControl>
-      <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-        <Button variant={'contained'} onClick={handleLogin} disableElevation>
+      <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
+        <Button variant={"contained"} onClick={handleLogin} disableElevation>
           Login
         </Button>
       </Box>
 
       <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         open={isSnackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
