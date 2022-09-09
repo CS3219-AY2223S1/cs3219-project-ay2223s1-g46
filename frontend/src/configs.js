@@ -1,4 +1,5 @@
-const URI_USER_SVC = process.env.URI_USER_SVC || "http://localhost:8000"
+// const URI_USER_SVC = process.env.URI_USER_SVC || "http://localhost:8000"
+const URI_USER_SVC = process.env.URI_USER_SVC || "" // bc using proxy
 
 const PREFIX_USER_SVC = "/api/user"
 const PREFIX_LOGIN_SVC = "/api/login"

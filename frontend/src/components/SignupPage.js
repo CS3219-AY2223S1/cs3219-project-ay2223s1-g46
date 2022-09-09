@@ -20,7 +20,11 @@ import {
 import { useState } from "react"
 import axios from "axios"
 import { URL_USER_SVC } from "../configs"
-import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from "../constants"
+import {
+  STATUS_CODE_CONFLICT,
+  STATUS_CODE_CREATED,
+  STATUS_CODE_INVALID,
+} from "../constants"
 import { Link, NavLink } from "react-router-dom"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 
@@ -51,20 +55,25 @@ function SignupPage() {
       setPasswordMissing(true)
     }
 
-    if (!username || !password) {
-      setIsSnackbarOpen(true)
-      setSnackbarTitle("Missing Field(s)")
-      setSnackbarMsg("Please fill in your username and password.")
-      return
-    }
+    // * already implemented in backend
+    // if (!username || !password) {
+    //   setIsSnackbarOpen(true)
+    //   setSnackbarTitle("Missing Field(s)")
+    //   setSnackbarMsg("Please fill in your username and password.")
+    //   return
+    // }
 
     const res = await axios
       .post(URL_USER_SVC, { username, password })
       .catch((err) => {
+        setIsSnackbarOpen(true)
         if (err.response.status === STATUS_CODE_CONFLICT) {
-          setErrorDialog("This username already exists")
+          setErrorSnackbar(err.response.data.message)
+        } else if (err.response.status === STATUS_CODE_INVALID) {
+          setErrorSnackbar(err.response.data.message)
         } else {
-          setErrorDialog("Please try again later")
+          setErrorSnackbar("Please try again.")
+          console.log("err.response :>> ", err.response)
         }
       })
     if (res && res.status === STATUS_CODE_CREATED) {
@@ -108,10 +117,11 @@ function SignupPage() {
     setDialogMsg(msg)
   }
 
-  const setErrorDialog = (msg) => {
-    setIsDialogOpen(true)
-    setDialogTitle("Error")
-    setDialogMsg(msg)
+  const setErrorSnackbar = (msg) => {
+    // TODO: configure custom title
+    setIsSnackbarOpen(true)
+    setSnackbarTitle("Error")
+    setSnackbarMsg(msg)
   }
 
   return (

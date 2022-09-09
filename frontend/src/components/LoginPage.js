@@ -15,7 +15,11 @@ import {
 import { useState } from "react"
 import axios from "axios"
 import { URL_LOGIN_SVC } from "../configs"
-import { STATUS_CODE_CREATED, STATUS_CODE_INVALID } from "../constants"
+import {
+  STATUS_CODE_INVALID,
+  STATUS_CODE_SUCCESS,
+  STATUS_CODE_UNAUTHORIZED,
+} from "../constants"
 import { NavLink, useNavigate } from "react-router-dom"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import "./css/LoginSignUpRedirectLink.css"
@@ -44,28 +48,38 @@ const LoginPage = () => {
       setPasswordMissing(true)
     }
 
-    if (!username || !password) {
-      setIsSnackbarOpen(true)
-      setSnackbarTitle("Missing Field(s)")
-      setSnackbarMsg("Please fill in your username and password.")
-      return
-    }
+    // * implemented in backend
+    // if (!username || !password) {
+    //   setErrorSnackbar(
+    //     "Missing Field(s)",
+    //     "Please fill in your username and password."
+    //   )
+    //   return
+    // }
 
     const res = await axios
       .post(URL_LOGIN_SVC, { username, password })
       .catch((err) => {
-        if (err.response.status === STATUS_CODE_INVALID) {
-          setSnackbarTitle(err.response.title)
-          setSnackbarMsg(err.response.message)
+        setIsSnackbarOpen(true)
+        if (err.response.status === STATUS_CODE_UNAUTHORIZED) {
+          setErrorSnackbar(err.response.title, err.response.message)
+        } else if (err.response.status === STATUS_CODE_INVALID) {
+          setErrorSnackbar("ERROR", err.response.data.message)
         } else {
-          setSnackbarTitle("Unknown Error")
-          setSnackbarMsg("Please try again.")
+          setErrorSnackbar("Unknown Error", "Please try again.") //TODO: custom title?
           console.log("err.response :>> ", err.response)
         }
       })
-    if (res && res.status === STATUS_CODE_CREATED) {
-      navigate("/") //TODO: change this
+    if (res && res.status === STATUS_CODE_SUCCESS) {
+      localStorage.setItem("username", res.username)
+      navigate("/")
     }
+  }
+
+  const setErrorSnackbar = (title, msg) => {
+    setIsSnackbarOpen(true)
+    setSnackbarTitle(title)
+    setSnackbarMsg(msg)
   }
 
   const handleCloseSnackbar = (event, reason) => {
