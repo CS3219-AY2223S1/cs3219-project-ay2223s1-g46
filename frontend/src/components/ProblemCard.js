@@ -21,25 +21,33 @@ export default function ProblemCard({username,difficulty,color,image,text}) {
   }
 
   return (
-      <Card variant='outlined' sx={{ height: 450 ,width: 400 }} style={{backgroundColor: `${color}`}}>
-        <CardContent className="title">
-            <Typography align="center" sx={{ fontSize: 20 }} color="black">
-            {difficulty}
-            </Typography>
-        </CardContent>
-        <CardMedia
-          className="image"
-          component="img"
-          image={image}
-        />
-        <CardContent sx={{ height: 60 ,width: 380 }} >
-          <Typography align="center" sx={{ fontSize: 20 }} color="black">
+    <Card
+      variant="outlined"
+      sx={{ height: 450, width: 400 }}
+      style={{ backgroundColor: `${color}` }}
+    >
+      <CardContent className="title">
+        <Typography align="center" sx={{ fontSize: 20 }} color="black">
+          {difficulty}
+        </Typography>
+      </CardContent>
+      <CardMedia className="image" component="img" image={image} />
+      <CardContent sx={{ height: 60, width: 380 }}>
+        <Typography align="center" sx={{ fontSize: 20 }} color="black">
           {text}
-          </Typography>
-        </CardContent>
-        <CardActions style={{justifyContent: 'center'}}>
-            <Button className="button" variant="contained" endIcon ={<CodeIcon/>}size="medium" onClick={matchDifficulty}>Match</Button>
-        </CardActions>
-      </Card>
-  );
+        </Typography>
+      </CardContent>
+      <CardActions style={{ justifyContent: "center" }}>
+        <Button
+          className="button"
+          variant="contained"
+          endIcon={<CodeIcon />}
+          size="medium"
+          onClick={matchDifficulty}
+        >
+          Match
+        </Button>
+      </CardActions>
+    </Card>
+  )
 }
