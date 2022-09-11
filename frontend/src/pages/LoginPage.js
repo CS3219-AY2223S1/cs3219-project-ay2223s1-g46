@@ -22,7 +22,7 @@ import {
 } from "../constants"
 import { NavLink, useNavigate } from "react-router-dom"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
-import "./css/LoginSignUpRedirectLink.css"
+import "../components/css/LoginSignUpRedirectLink.css"
 
 // TODO: make responsive if needed (inputs get squashed for now)
 

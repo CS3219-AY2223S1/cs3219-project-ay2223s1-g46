@@ -4,13 +4,13 @@ import {
   Route,
   Navigate,
 } from "react-router-dom"
-import HomePage from "./components/HomePage"
-import SignupPage from "./components/SignupPage"
-import ProblemPage from "./components/ProblemPage"
-import LoginPage from "./components/LoginPage"
-import ContributePage from "./components/ContributePage"
-import MatchingPage from "./components/MatchingPage"
-import EditorPage from "./components/EditorPage";
+import HomePage from "./pages/HomePage"
+import SignupPage from "./pages/SignupPage"
+import ProblemPage from "./pages/ProblemPage"
+import LoginPage from "./pages/LoginPage"
+import ContributePage from "./pages/ContributePage"
+import MatchingPage from "./pages/MatchingPage"
+import EditorPage from "./pages/EditorPage"
 import NavBar from "./components/NavBar"
 
 function App() {
@@ -24,8 +24,8 @@ function App() {
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/signup" element={<ContributePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/matching" element={<MatchingPage/>}/>
-          <Route path="/editor" element={<EditorPage/>}/>
+          <Route path="/matching" element={<MatchingPage />} />
+          <Route path="/editor" element={<EditorPage />} />
         </Routes>
       </Router>
     </div>
