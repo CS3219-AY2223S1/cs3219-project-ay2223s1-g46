@@ -52,8 +52,9 @@ const ProfilePage = ({ user }) => {
   // TODO: test this
   const handleDelete = async () => {
     console.log("Delete Account Confirmation :>> pressed")
+    console.log("user :>> ", user)
 
-    const res = await axios.put(URL_DELETE_SVC, { user }).catch((err) => {
+    const res = await axios.delete(URL_DELETE_SVC).catch((err) => {
       if (err.response.status === STATUS_CODE_UNAUTHORIZED) {
         setErrorSnackbar(err.response.data.title, err.response.data.message)
       } else if (err.response.status === STATUS_CODE_INVALID) {
@@ -69,6 +70,7 @@ const ProfilePage = ({ user }) => {
     if (res && res.status === STATUS_CODE_NO_CONTENT) {
       setToDelete(true)
       setDialog("Account successfully deleted", "")
+      localStorage.clear()
       navigate("/")
     }
   }
