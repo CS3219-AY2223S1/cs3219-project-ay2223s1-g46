@@ -12,6 +12,7 @@ import ContributePage from "./pages/ContributePage"
 import MatchingPage from "./pages/MatchingPage"
 import EditorPage from "./pages/EditorPage"
 import NavBar from "./components/NavBar"
+import ProfilePage from "./pages/ProfilePage"
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/matching" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </Router>
     </div>

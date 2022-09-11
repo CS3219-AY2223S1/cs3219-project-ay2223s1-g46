@@ -14,7 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { Link } from "react-router-dom"
 import "./css/NavBar.css"
 
-const pages = ["contribute", "problems", "login", "signup"]
+const pages = ["contribute", "problems", "login", "signup", "profile"]
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
