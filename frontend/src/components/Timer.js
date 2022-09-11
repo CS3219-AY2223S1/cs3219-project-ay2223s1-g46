@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react"
-import { Navigate, useNavigate } from "react-router"
-import "./css/Timer.css"
+import React, {useState, useRef, useEffect} from "react";
+import { Navigate, useNavigate } from "react-router";
+import './css/Timer.css';
 
 function Timer() {
   const intervalRef = useRef(null)

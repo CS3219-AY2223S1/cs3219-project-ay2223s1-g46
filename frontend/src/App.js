@@ -10,6 +10,7 @@ import ProblemPage from "./components/ProblemPage"
 import LoginPage from "./components/LoginPage"
 import ContributePage from "./components/ContributePage"
 import MatchingPage from "./components/MatchingPage"
+import EditorPage from "./components/EditorPage";
 import NavBar from "./components/NavBar"
 
 function App() {
@@ -23,7 +24,8 @@ function App() {
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/signup" element={<ContributePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="problems/matching" element={<MatchingPage />} />
+          <Route path="/matching" element={<MatchingPage/>}/>
+          <Route path="/editor" element={<EditorPage/>}/>
         </Routes>
       </Router>
     </div>

@@ -1,20 +1,23 @@
-import * as React from "react"
-import CardMedia from "@mui/material/CardMedia"
-import Card from "@mui/material/Card"
-import CardActions from "@mui/material/CardActions"
-import CardContent from "@mui/material/CardContent"
-import Button from "@mui/material/Button"
-import Typography from "@mui/material/Typography"
-import CodeIcon from "@mui/icons-material/Code"
-import { useNavigate } from "react-router-dom"
-import "./css/ProblemCard.css"
+import * as React from 'react';
+import CardMedia from '@mui/material/CardMedia';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import CodeIcon from  '@mui/icons-material/Code';
+import {useNavigate} from "react-router-dom";
+import './css/ProblemCard.css';
+import io from 'socket.io-client'
 
-export default function ProblemCard({ difficulty, color, image, text }) {
-  let navigate = useNavigate()
-
+export default function ProblemCard({username,difficulty,color,image,text}) {
+  let navigate = useNavigate();
+  
   const matchDifficulty = () => {
-    let path = `matching`
-    navigate(path)
+    const socket = io('http://localhost:8001/', {
+      transports: ['websocket'],
+    })
+    navigate("../matching");
   }
 
   return (
