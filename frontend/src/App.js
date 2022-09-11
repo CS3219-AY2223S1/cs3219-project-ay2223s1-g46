@@ -13,14 +13,10 @@ import MatchingPage from "./pages/MatchingPage"
 import EditorPage from "./pages/EditorPage"
 import NavBar from "./components/NavBar"
 import ProfilePage from "./pages/ProfilePage"
-import { useState } from "react"
+import useUser from "./hooks/useUser"
 
 function App() {
-  const [user, setUser] = useState("")
-
-  const handleSetUser = (username) => {
-    setUser(username)
-  }
+  const { user } = useUser()
 
   return (
     <div className="App">
@@ -31,10 +27,7 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/signup" element={<ContributePage />} />
-          <Route
-            path="/login"
-            element={<LoginPage handleSetUser={handleSetUser} />}
-          />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/matching" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/profile" element={<ProfilePage user={user} />} />
