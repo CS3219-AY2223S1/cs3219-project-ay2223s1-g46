@@ -2,7 +2,8 @@ import { ormCreateUser as _createUser,
     ormCheckUserExist as _checkUserExist,
     ormCompareHash as _compareHash,
     ormCreateJWT as _createJWT,
-    ormGetUser as _getUser } from '../model/user-orm.js'
+    ormGetUser as _getUser,
+    ormDeleteUser as _deleteUser } from '../model/user-orm.js'
 
 export async function createUser(req, res) {
     try {
@@ -66,13 +67,53 @@ export async function loginUser(req, res) {
 
 export async function logoutUser(req, res) {
     try {
+
+        console.log(`Logged out of ${req.username} successfully!`)
         // remove cookie if user logs out
         return res
         .clearCookie("token")
         .status(200)
         .json({ message: "Successfully logged out!"});
+
     } catch (err) {
         console.log(err)
-        return res.status(500).json({message: 'Failure when logging out user!'})
+        return res.status(500).json({message: 'Database Failure when logging out user!'})
+    }
+}
+
+
+
+export async function deleteUser(req, res) {
+    try {
+
+        const { username } = req.body;
+
+        if (username) {
+            const userExists = await _checkUserExist(username);
+            if (!userExists) {
+                return res.status(401).json({title:'Invalid username', message: 'This username does not exist!'})
+            }
+            
+            // req.username from jwt in middleware
+            // only can delete if your jwt token has same username
+            if (req.username !== username) {
+                return res.status(401).json({title:'Unable to delete account', message: 'This account does not belong to you!'})
+            }
+
+            await _deleteUser(username);
+
+            console.log(`Deleted account of ${req.username} successfully!`)
+    
+            // remove cookie since user logged out
+            return res
+            .clearCookie("token")
+            .status(204)
+            .json({ message: "Successfully deleted account!"});
+        } else {
+            return res.status(400).json({message: 'Username is missing!'});
+        }
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({message: 'Database Failure when deleting user!'})
     }
 }

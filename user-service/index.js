@@ -9,7 +9,7 @@ app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
 app.use(cookieParser());
-import { createUser, logoutUser } from './controller/user-controller.js';
+import { createUser, deleteUser, logoutUser } from './controller/user-controller.js';
 import { loginUser } from './controller/user-controller.js';
 
 const router = express.Router()
@@ -47,6 +47,13 @@ app.use('/api/protected', protectedRouter).all((_, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
 })
 
+
+const deleteRouter = express.Router()
+deleteRouter.delete('/', authorization, deleteUser)
+app.use('/api/delete', deleteRouter).all((_, res) => {
+    res.setHeader('content-type', 'application/json')
+    res.setHeader('Access-Control-Allow-Origin', '*')
+})
 
 
 app.listen(8000, () => console.log('user-service listening on port 8000'));

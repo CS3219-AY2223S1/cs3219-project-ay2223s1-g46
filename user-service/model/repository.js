@@ -55,3 +55,7 @@ export async function createJWT(user) {
   const token = jwt.sign(userForToken, process.env.SECRET)
   return token
 }
+
+export async function deleteUser(username) {
+  return UserModel.findOneAndDelete({username})
+}
