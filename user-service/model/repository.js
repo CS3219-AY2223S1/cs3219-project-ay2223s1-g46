@@ -1,4 +1,5 @@
-import UserModel from './user-model.js';
+import UserModel from './user/user-model.js';
+import TokenModel from './token/token-model.js';
 import 'dotenv/config'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -58,4 +59,35 @@ export async function createJWT(user) {
 
 export async function deleteUser(username) {
   return UserModel.findOneAndDelete({username})
+}
+
+export async function updatePassword(username, newPassword) {
+  const saltRounds = 10
+
+  // autogen salt and hash
+  const passwordHash = await bcrypt.hash(newPassword, saltRounds)
+
+  const updatedUser = await UserModel.findOneAndUpdate(
+    { "username" : username},
+    { passwordHash },
+    { new: true, runValidators: true, context: 'query' }
+  )
+
+  return updatedUser
+
+}
+
+export async function checkTokenBlacklisted(token) {
+  
+  const findToken = await TokenModel.findOne({token})
+  if (findToken) {
+    return true
+  }
+  else {
+    return false
+  }
+}
+
+export async function blackListToken(token) {
+  return new TokenModel({token})
 }
