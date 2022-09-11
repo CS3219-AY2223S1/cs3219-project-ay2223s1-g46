@@ -1,18 +1,18 @@
 .peerImage {
-    padding: 10px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width:50%;
+  padding: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 
 .container {
-    width:50%;
-    margin-left: auto;
-    margin-right: auto;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }
 .mainText {
-    padding: 70px 0;
-    text-align: center;
-    overflow-wrap: break-word; 
+  padding: 70px 0;
+  text-align: center;
+  overflow-wrap: break-word;
 }

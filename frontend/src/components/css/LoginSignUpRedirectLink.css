@@ -1,0 +1,16 @@
+.redirectText {
+  font-size: medium;
+  font-style: italic;
+  font-size: 14px;
+}
+
+.redirectLink {
+  text-decoration: none;
+  font-size: medium;
+  color: #54c9bf;
+  font-size: 14px;
+}
+
+.redirectLink:hover {
+  text-decoration: underline;
+}

@@ -1,9 +1,7 @@
-import React from "react";
+import React from "react"
 
 const ContributePage = () => {
-    return (
-    <div className = "Contribute" />
-    )
+  return <div className="Contribute" />
 }
 
-export default ContributePage;
+export default ContributePage
