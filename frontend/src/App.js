@@ -13,8 +13,15 @@ import MatchingPage from "./pages/MatchingPage"
 import EditorPage from "./pages/EditorPage"
 import NavBar from "./components/NavBar"
 import ProfilePage from "./pages/ProfilePage"
+import { useState } from "react"
 
 function App() {
+  const [user, setUser] = useState("")
+
+  const handleSetUser = (username) => {
+    setUser(username)
+  }
+
   return (
     <div className="App">
       <Router>
@@ -24,10 +31,13 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/signup" element={<ContributePage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/login"
+            element={<LoginPage handleSetUser={handleSetUser} />}
+          />
           <Route path="/matching" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage user={user} />} />
         </Routes>
       </Router>
     </div>

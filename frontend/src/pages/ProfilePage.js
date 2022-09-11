@@ -24,8 +24,8 @@ import {
   STATUS_CODE_NO_CONTENT,
 } from "../constants"
 
-const ProfilePage = () => {
-  const [username, setUsername] = useState("TODO: fill in")
+const ProfilePage = ({ user }) => {
+  //   const [username, setUsername] = useState("TODO: fill in")
 
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [snackbarTitle, setSnackbarTitle] = useState("")
@@ -53,7 +53,7 @@ const ProfilePage = () => {
   const handleDelete = async () => {
     console.log("Delete Account Confirmation :>> pressed")
 
-    const res = await axios.put(URL_DELETE_SVC, { username }).catch((err) => {
+    const res = await axios.put(URL_DELETE_SVC, { user }).catch((err) => {
       if (err.response.status === STATUS_CODE_UNAUTHORIZED) {
         setErrorSnackbar(err.response.data.title, err.response.data.message)
       } else if (err.response.status === STATUS_CODE_INVALID) {
@@ -130,7 +130,7 @@ const ProfilePage = () => {
             variant="outlined"
             size="small"
             sx={{ marginBottom: "1rem" }}
-            value={username}
+            value={user}
             inputProps={{ readOnly: true }}
           />
           <Box display={"flex"} flexDirection={"column"} marginTop={2}>

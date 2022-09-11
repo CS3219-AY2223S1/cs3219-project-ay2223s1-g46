@@ -26,7 +26,7 @@ import "../components/css/LoginSignUpRedirectLink.css"
 
 // TODO: make responsive if needed (inputs get squashed for now)
 
-const LoginPage = () => {
+const LoginPage = ({ handleSetUser }) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -71,7 +71,7 @@ const LoginPage = () => {
         }
       })
     if (res && res.status === STATUS_CODE_SUCCESS) {
-      localStorage.setItem("username", res.username)
+      handleSetUser(res.data.username)
       navigate("/")
     }
   }
