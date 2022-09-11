@@ -9,16 +9,18 @@ app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
 app.use(cookieParser());
-import { createUser, deleteUser, logoutUser } from './controller/user-controller.js';
-import { loginUser } from './controller/user-controller.js';
+import { createUser, deleteUser, logoutUser, updatePassword, loginUser } from './controller/user-controller.js';
 
-const router = express.Router()
+const userRouter = express.Router()
 
 // Controller will contain all the User-defined Routes
-router.get('/', (_, res) => res.send('Hello World from user-service'))
-router.post('/', createUser)
+userRouter.get('/', (_, res) => res.send('Hello World from user-service'))
+userRouter.post('/', createUser)
+// need to check if works
+userRouter.put('/password', authorization, updatePassword)
+userRouter.delete('/delete', authorization, deleteUser)
 
-app.use('/api/user', router).all((_, res) => {
+app.use('/api/user', userRouter).all((_, res) => {
     res.setHeader('content-type', 'application/json')
     res.setHeader('Access-Control-Allow-Origin', '*')
 })
@@ -48,12 +50,6 @@ app.use('/api/protected', protectedRouter).all((_, res) => {
 })
 
 
-const deleteRouter = express.Router()
-deleteRouter.delete('/', authorization, deleteUser)
-app.use('/api/delete', deleteRouter).all((_, res) => {
-    res.setHeader('content-type', 'application/json')
-    res.setHeader('Access-Control-Allow-Origin', '*')
-})
 
 
 app.listen(8000, () => console.log('user-service listening on port 8000'));

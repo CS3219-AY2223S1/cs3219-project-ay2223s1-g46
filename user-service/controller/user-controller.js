@@ -3,7 +3,10 @@ import { ormCreateUser as _createUser,
     ormCompareHash as _compareHash,
     ormCreateJWT as _createJWT,
     ormGetUser as _getUser,
-    ormDeleteUser as _deleteUser } from '../model/user-orm.js'
+    ormDeleteUser as _deleteUser,
+    ormUpdatePassword as _updatePassword } from '../model/user/user-orm.js'
+
+import { ormBlacklistToken as _blacklistToken } from '../model/token/token-orm.js';
 
 export async function createUser(req, res) {
     try {
@@ -16,7 +19,7 @@ export async function createUser(req, res) {
             }
 
             const resp = await _createUser(username, password);
-            console.log(resp);
+
             if (resp.err) {
                 return res.status(400).json({message: 'Could not create a new user!'});
             } else {
@@ -70,6 +73,9 @@ export async function logoutUser(req, res) {
 
         console.log(`Logged out of ${req.username} successfully!`)
         // remove cookie if user logs out
+
+        await _blacklistToken(req.cookies.token)
+
         return res
         .clearCookie("token")
         .status(200)
@@ -80,8 +86,6 @@ export async function logoutUser(req, res) {
         return res.status(500).json({message: 'Database Failure when logging out user!'})
     }
 }
-
-
 
 export async function deleteUser(req, res) {
     try {
@@ -102,6 +106,8 @@ export async function deleteUser(req, res) {
 
             await _deleteUser(username);
 
+            await _blacklistToken(req.cookies.token)
+
             console.log(`Deleted account of ${req.username} successfully!`)
     
             // remove cookie since user logged out
@@ -111,6 +117,49 @@ export async function deleteUser(req, res) {
             .json({ message: "Successfully deleted account!"});
         } else {
             return res.status(400).json({message: 'Username is missing!'});
+        }
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({message: 'Database Failure when deleting user!'})
+    }
+}
+
+export async function updatePassword(req, res) {
+    try {
+
+        const { username, oldPassword, newPassword } = req.body;
+
+        if (username && oldPassword && newPassword) {
+            const userExists = await _checkUserExist(username);
+
+            if (!userExists) {
+                return res.status(401).json({title:'Invalid username', message: 'This username does not exist!'})
+            }
+            
+            // req.username from jwt in middleware
+            if (req.username !== username) {
+                return res.status(401).json({title:'Unable to change password', message: 'This account does not belong to you!'})
+            }
+
+            const validHash = await _compareHash(username, oldPassword);
+            if (!validHash) {
+                return res.status(401).json({title:'Unable to change password', message: 'The password does not match this user!'})
+            }
+
+            const sameHash = await _compareHash(username, newPassword);
+            if (sameHash) {
+                return res.status(401).json({title:'Unable to change password', message: 'The new password is unchanged!'})
+            }
+            await _updatePassword(username, newPassword);
+
+            console.log(`Changed password of user ${req.username} successfully!`)
+    
+            return res
+            .status(200)
+            .json({ message: "Successfully changed password!"});
+
+        } else {
+            return res.status(400).json({message: 'Username or old password or new password is missing!'});
         }
     } catch (err) {
         console.log(err)
