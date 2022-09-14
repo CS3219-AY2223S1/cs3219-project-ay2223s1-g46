@@ -1,12 +1,13 @@
 import { createPendingMatch, findOnePendingMatchAndDelete, registerListener } from './repository.js';
 
 //need to separate orm functions from repository to decouple business logic from persistence
-export async function ormCreatePendingMatch(username, socket_id, difficulty) {
+export async function ormCreatePendingMatch(username, socket_id, difficulty, timeout_id) {
     try {
         const newUser = await createPendingMatch({
             username: username, 
             socket_id: socket_id, 
-            difficulty: difficulty
+            difficulty: difficulty,
+            timeout_id: timeout_id
         });
         newUser.save();
         return true;

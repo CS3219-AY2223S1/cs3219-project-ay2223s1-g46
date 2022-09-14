@@ -15,6 +15,11 @@ let PendingMatchModelSchema = new Schema({
         type: String,
         required: true,
         unique: false
+    },
+    timeout_id: {
+        type: Number,
+        required: true,
+        unique: false
     }
 })
 

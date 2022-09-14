@@ -44,9 +44,12 @@ io.on("connection", (socket) => {
             { difficulty: {$eq: difficulty} } //explict $eq to prevent injection attack
         );
         if (avaliableMatch) { 
+            clearTimeout(avaliableMatch.timeout_id);
+            
             const otherSocket = io.sockets.sockets.get(avaliableMatch.socket_id); // TODO: Detect if socket has already disconnected
             const room_id = uuidv4();
-            //TODO: Probably disable server side timer for otherSocket here
+            
+            //Handle other socket
             otherSocket.join(room_id); 
             socket.to(room_id).emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
             otherSocket.on("message", 
@@ -54,6 +57,7 @@ io.on("connection", (socket) => {
             )
             socket.to(room_id).emit("match_user", username);
 
+            //Handle this socket
             socket.join(room_id);
             socket.emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
             socket.on("message", 
@@ -63,11 +67,18 @@ io.on("connection", (socket) => {
             //TODO: Add mechanism to allow users to leave room without disconnecting
         } else {//Match not found
             try {
-                await ormCreatePendingMatch(username, socket.id, difficulty)
+                //Note: timeout_id doesn't work across worker threads
+                const timeout_id = +setTimeout(async () => {//Note: we have the plus to force conversion to number
+                        await ormAtomicFindFirstPendingMatchAndDelete(
+                            { socket_id: {$eq: socket.id} } //explict $eq to prevent injection attack
+                        );
+                        socket.emit("match_result", "Timeout, try again");
+                        console.log("Timeout on socket " + socket.id)
+                    }, 1000 * 30);
+                await ormCreatePendingMatch(username, socket.id, difficulty, timeout_id)
                 socket.removeAllListeners("match");
                 console.log("Match in progress")
                 socket.emit("match_result", "Match in progress");
-                //TODO: Add timer to expire and take back database record
             } catch (err) { //Catch block doesn't actually work. //TODO: Test this by submitting 2 names at the same time
                 console.error(err);
                 socket.emit("match_result", "Fail, try again");
