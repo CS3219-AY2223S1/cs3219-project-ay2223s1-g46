@@ -43,7 +43,6 @@ io.on("connection", (socket) => {
                 (msg) => socket.to(room_id).emit("message", msg)
             )
             socket.emit("match_user", avaliableMatch.username);
-            //TODO: Add mechanism to disconnect if other user disconnects
         } else {//Match not found
             try {
                 await ormCreatePendingMatch(username, socket.id, difficulty)
@@ -57,6 +56,26 @@ io.on("connection", (socket) => {
                 socket.emit("match_result", "Fail, try again");
             }
         }
+    });
+    socket.on("disconnecting", async (_) => { //TODO: Test this
+        for (const room of socket.rooms) {
+            if (room !== socket.id) {
+                socket.to(room).emit("user_leaves", socket.id);
+                socket.leave(room);
+                //Future proof for rooms with more than 2 people
+                const room_contents = io.sockets.adapter.rooms.get(room);
+                const room_occupancy = room_contents.size;
+                if (room_occupancy < 2) { 
+                    const lonely_socket_id = room_contents.values().next().value;
+                    const lonely_socket = io.sockets.sockets.get(lonely_socket_id);
+                    lonely_socket.leave(room); //TODO: Test this
+                    //TODO: Maybe add a message to the lonely socket about the room being torn down?
+                }
+            }
+        }
+        await ormAtomicFindFirstPendingMatchAndDelete( //TODO: Check this does not break if we find nothing
+            { socket_id: {$eq: socket.id} } //explict $eq to prevent injection attack
+        );
     });
 });
 
