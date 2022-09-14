@@ -48,14 +48,14 @@ io.on("connection", (socket) => {
             const room_id = uuidv4();
             //TODO: Probably disable server side timer for otherSocket here
             otherSocket.join(room_id); 
-            socket.to(room_id).emit("matchSuccess","Found"); //TODO: Require ack
+            socket.to(room_id).emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
             otherSocket.on("message", 
                 (msg) => otherSocket.to(room_id).emit("message", msg)
             )
             socket.to(room_id).emit("match_user", username);
 
             socket.join(room_id);
-            socket.emit("matchSuccess","Found"); //TODO: Require ack
+            socket.emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
             socket.on("message", 
                 (msg) => socket.to(room_id).emit("message", msg)
             )
