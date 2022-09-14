@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
         var avaliableMatch = await ormAtomicFindFirstPendingMatchAndDelete(
             { difficulty: {$eq: difficulty} } //explict $eq to prevent injection attack
         );
-        if (avaliableMatch) { //TODO: Test difficulty filtering
+        if (avaliableMatch) { 
             const otherSocket = io.sockets.sockets.get(avaliableMatch.socket_id); // TODO: Detect if socket has already disconnected
             const room_id = uuidv4();
             //TODO: Probably disable server side timer for otherSocket here
@@ -60,6 +60,7 @@ io.on("connection", (socket) => {
                 (msg) => socket.to(room_id).emit("message", msg)
             )
             socket.emit("match_user", avaliableMatch.username);
+            //TODO: Add mechanism to allow users to leave room without disconnecting
         } else {//Match not found
             try {
                 await ormCreatePendingMatch(username, socket.id, difficulty)
@@ -67,7 +68,6 @@ io.on("connection", (socket) => {
                 console.log("Match in progress")
                 socket.emit("match_result", "Match in progress");
                 //TODO: Add timer to expire and take back database record
-                //TODO: Figure out how to receive match from other person
             } catch (err) { //Catch block doesn't actually work. //TODO: Test this by submitting 2 names at the same time
                 console.error(err);
                 socket.emit("match_result", "Fail, try again");
@@ -75,7 +75,7 @@ io.on("connection", (socket) => {
         }
     });
     socket.on("disconnect", async (_) => {
-        await ormAtomicFindFirstPendingMatchAndDelete( //TODO: Check this does not break if we find nothing
+        await ormAtomicFindFirstPendingMatchAndDelete(
             { socket_id: {$eq: socket.id} } //explict $eq to prevent injection attack
         );
     });
