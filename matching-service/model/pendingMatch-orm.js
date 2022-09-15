@@ -15,10 +15,15 @@ export async function ormCreatePendingMatch(username, socket_id, difficulty, tim
         console.log('ERROR: Could not create new pending match');
         return { err };
     }
-}export async function ormAtomicFindFirstPendingMatchAndDelete(searchParams) {
-    return await findOnePendingMatchAndDelete(searchParams);
-  }
-export async function ormRegisterAddListener(callback) {
-    registerListener(callback);
+}
+export async function ormClaimFirstMatchByDifficulty(difficulty) {
+    return await findOnePendingMatchAndDelete(
+        { difficulty: {$eq: difficulty} } //explict $eq to prevent injection attack
+    );
+}
+export async function ormFlushPendingMatchById(socket_id) {
+    return await findOnePendingMatchAndDelete(
+        { socket_id: {$eq: socket_id} } //explict $eq to prevent injection attack
+    );
 }
 

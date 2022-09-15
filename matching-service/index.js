@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from "socket.io";
-import { ormCreatePendingMatch, ormAtomicFindFirstPendingMatchAndDelete, ormRegisterAddListener } from "./model/pendingMatch-orm.js"
+import { ormCreatePendingMatch, ormClaimFirstMatchByDifficulty, ormFlushPendingMatchById } from "./model/pendingMatch-orm.js"
 import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
@@ -18,6 +18,9 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app)
 
+//TODO: Refactor architecture. See the following:
+// https://socket.io/docs/v4/server-application-structure/
+// https://aleemisiaka.com/blog/socketio-app-structure/
 const io = new Server(httpServer, { /* options */ });
 io.on("connection", (socket) => {
     console.log("Logging socket connection")
@@ -29,9 +32,7 @@ io.on("connection", (socket) => {
             }
         }
         //Flush existing timer, if any
-        var existing_match = await ormAtomicFindFirstPendingMatchAndDelete(
-            { socket_id: {$eq: socket.id} } //explict $eq to prevent injection attack
-        );
+        var existing_match = await ormFlushPendingMatchById(socket.id);
         if (existing_match) {
             clearTimeout(existing_match.timeout_id);
         }
@@ -58,9 +59,7 @@ io.on("connection", (socket) => {
         socket.on("leave_room", leaveRoomCallback);
         
         console.log("Creating for: " + username + "; Difficulty: " + difficulty)
-        var avaliableMatch = await ormAtomicFindFirstPendingMatchAndDelete(
-            { difficulty: {$eq: difficulty} } //explict $eq to prevent injection attack
-        );
+        var avaliableMatch = await ormClaimFirstMatchByDifficulty(difficulty)
         if (avaliableMatch) { 
             clearTimeout(avaliableMatch.timeout_id);
             
@@ -86,9 +85,7 @@ io.on("connection", (socket) => {
             try {
                 //Note: timeout_id doesn't work across worker threads
                 const timeout_id = +setTimeout(async () => {//Note: we have the plus to force conversion to number
-                        await ormAtomicFindFirstPendingMatchAndDelete(
-                            { socket_id: {$eq: socket.id} } //explict $eq to prevent injection attack
-                        );
+                        await ormFlushPendingMatchById(socket.id);
                         socket.emit("match_result", "Timeout, try again");
                         console.log("Timeout on socket " + socket.id)
                     }, 1000 * 30);
@@ -101,11 +98,7 @@ io.on("connection", (socket) => {
             }
         }
     });
-    socket.on("disconnect", async (_) => {
-        await ormAtomicFindFirstPendingMatchAndDelete(
-            { socket_id: {$eq: socket.id} } //explict $eq to prevent injection attack
-        );
-    });
+    socket.on("disconnect", async (_) => {await ormFlushPendingMatchById(socket.id);});
 });
 
 /*
@@ -114,13 +107,7 @@ io.on("connection", (socket) => {
 //Race condition in question is "write skew", needs "SERIALIZABLE ISOLATION" to prevent
 //  See: https://www.cockroachlabs.com/blog/what-write-skew-looks-like/
 
-//TODO: Add listener to, on finding potential match, messages the socket that can be matched
-ormRegisterAddListener(change => { //This requires replica sets? //TODO: Fix this
-    if (change.operationType = "create") {//TODO: check if this condition is correct
-        //TODO: Add function to find first pair, based on who got added
-    }
-})
-
+//TODO: Add repeatingTimer to check database for dangling pairs of pendingMatches with matching difficulty
 */
 
 httpServer.listen(8001);
