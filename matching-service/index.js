@@ -24,6 +24,16 @@ const httpServer = createServer(app)
 const io = new Server(httpServer, { /* options */ });
 io.on("connection", (socket) => {
     console.log("Logging socket connection")
+    const abortPendingMatch = async () => {
+        var existing_match = await ormFlushPendingMatchById(socket.id);
+        if (existing_match) {
+            clearTimeout(existing_match.timeout_id);
+        }
+        //Prune leaveRoomCallback created in the 'match' listener
+        socket.removeAllListeners("disconnecting");
+        socket.removeAllListeners("leave_room");
+    }
+    socket.on("abort_match", abortPendingMatch);
     socket.on("match", async (username, difficulty) => {
         for (const room of socket.rooms) {
             if (room !== socket.id) {
@@ -31,13 +41,7 @@ io.on("connection", (socket) => {
                 return; //Already in room, ignore
             }
         }
-        //Flush existing timer, if any
-        var existing_match = await ormFlushPendingMatchById(socket.id);
-        if (existing_match) {
-            clearTimeout(existing_match.timeout_id);
-        }
-        //Create unique disconnect/leave logic
-        socket.removeAllListeners("disconnecting");
+        await abortPendingMatch();
         const leaveRoomCallback = () => {
             for (const room of socket.rooms) {
                 if (room !== socket.id) {
@@ -56,7 +60,7 @@ io.on("connection", (socket) => {
             }
         };
         socket.on("disconnecting", (_) => {leaveRoomCallback();});
-        socket.on("leave_room", leaveRoomCallback);
+        socket.once("leave_room", leaveRoomCallback);
         
         console.log("Creating for: " + username + "; Difficulty: " + difficulty)
         var avaliableMatch = await ormClaimFirstMatchByDifficulty(difficulty)
