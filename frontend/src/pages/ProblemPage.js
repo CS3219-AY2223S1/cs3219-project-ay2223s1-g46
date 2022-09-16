@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material"
-import ProblemCard from "./ProblemCard"
-import "./css/ProblemPage.css"
+import ProblemCard from "../components/ProblemCard"
+import "../components/css/ProblemPage.css"
 
 function ProblemPage() {
   return (

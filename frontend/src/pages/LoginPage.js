@@ -22,7 +22,7 @@ import {
 } from "../constants"
 import { NavLink, useNavigate } from "react-router-dom"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
-import "./css/LoginSignUpRedirectLink.css"
+import "../components/css/LoginSignUpRedirectLink.css"
 
 // TODO: make responsive if needed (inputs get squashed for now)
 
@@ -71,7 +71,7 @@ const LoginPage = () => {
         }
       })
     if (res && res.status === STATUS_CODE_SUCCESS) {
-      localStorage.setItem("username", res.username)
+      localStorage.setItem("loggedUser", res.data.username)
       navigate("/")
     }
   }
