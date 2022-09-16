@@ -17,7 +17,4 @@ export async function createPendingMatch(params) {
 export async function findOnePendingMatchAndDelete(params) {
   return PendingMatchModel.findOneAndDelete(params)
 }
-export async function registerListener(callback) {
-  PendingMatchModel.watch().on('change', callback);
-}
 
