@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import HomePage from "./pages/HomePage"
 import SignupPage from "./pages/SignupPage"
 import ProblemPage from "./pages/ProblemPage"
@@ -14,6 +9,7 @@ import EditorPage from "./pages/EditorPage"
 import NavBar from "./components/NavBar"
 import ProfilePage from "./pages/ProfilePage"
 import useUser from "./hooks/useUser"
+import ChangePasswordPage from "./pages/ChangePasswordPage"
 
 function App() {
   const { user, saveUser } = useUser()
@@ -31,6 +27,10 @@ function App() {
           <Route path="/matching" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/profile" element={<ProfilePage user={user} />} />
+          <Route
+            path="/change-password"
+            element={<ChangePasswordPage user={user}></ChangePasswordPage>}
+          ></Route>
         </Routes>
       </Router>
     </div>

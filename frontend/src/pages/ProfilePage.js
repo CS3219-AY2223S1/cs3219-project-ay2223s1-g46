@@ -40,15 +40,16 @@ const ProfilePage = ({ user }) => {
   const navigate = useNavigate()
 
   const handleChangePassword = () => {
-    //TODO: complete for week 6
-    console.log("Change Password :>> not yet implemented")
+    navigate("/change-password")
   }
 
+  // used by delete account button
   const handleDeleteConfirmation = () => {
     console.log("Delete Account :>> pressed")
     setDialog("Confirmation", "Do you want to delete your account?")
   }
 
+  // used by dialog
   const handleDelete = async () => {
     console.log("Delete Account Confirmation :>> pressed")
     console.log("user :>> ", user)
