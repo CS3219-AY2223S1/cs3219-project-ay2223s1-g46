@@ -15,9 +15,15 @@ const useUser = () => {
     setUser(username)
   }
 
+  const removeUser = () => {
+    window.localStorage.removeItem(STORAGE_KEY)
+    setUser(null)
+  }
+
   return {
     user,
     saveUser,
+    removeUser,
   }
 }
 

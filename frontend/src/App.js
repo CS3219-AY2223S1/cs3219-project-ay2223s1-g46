@@ -17,7 +17,7 @@ import useUser from "./hooks/useUser"
 import ChangePasswordPage from "./pages/ChangePasswordPage"
 
 function App() {
-  const { user, saveUser } = useUser()
+  const { user, saveUser, removeUser } = useUser()
 
   return (
     <div className="App">
@@ -34,7 +34,11 @@ function App() {
           <Route
             path="/profile"
             element={
-              user ? <ProfilePage user={user} /> : <Navigate to="/"></Navigate>
+              user ? (
+                <ProfilePage user={user} removeUser={removeUser} />
+              ) : (
+                <Navigate to="/"></Navigate>
+              )
             }
           />
           <Route

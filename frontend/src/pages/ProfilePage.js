@@ -16,15 +16,16 @@ import axios from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 import { Link } from "react-router-dom"
-import { URL_DELETE_SVC } from "../configs"
+import { URL_DELETE_SVC, URL_LOGOUT_SVC } from "../configs"
 import {
   STATUS_CODE_INTERAL_ERROR,
   STATUS_CODE_INVALID,
   STATUS_CODE_UNAUTHORIZED,
   STATUS_CODE_NO_CONTENT,
+  STATUS_CODE_SUCCESS,
 } from "../constants"
 
-const ProfilePage = ({ user }) => {
+const ProfilePage = ({ user, removeUser }) => {
   //   const [username, setUsername] = useState("TODO: fill in")
 
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
@@ -71,6 +72,27 @@ const ProfilePage = ({ user }) => {
       setToDelete(true)
       setDialog("Account successfully deleted", "")
       localStorage.clear()
+      navigate("/")
+    }
+  }
+
+  const handleLogOut = async () => {
+    console.log("Logout :>> pressed")
+    console.log("user :>> ", user)
+
+    const res = await axios.get(URL_LOGOUT_SVC).catch((err) => {
+      // TODO: backend needs to implement data.title
+      if (err.response.status === STATUS_CODE_INTERAL_ERROR) {
+        setErrorSnackbar(err.response.data.title, err.response.data.message)
+      } else {
+        setErrorSnackbar("ERROR", "Please try again.")
+        console.log("err.response :>> ", err.response)
+      }
+    })
+
+    if (res && res.status === STATUS_CODE_SUCCESS) {
+      setDialog("Successfully Logged Out", "")
+      removeUser()
       navigate("/")
     }
   }
@@ -154,6 +176,17 @@ const ProfilePage = ({ user }) => {
               Delete Account
             </Button>
           </Box>
+        </Box>
+
+        <Box display={"flex"} flexDirection={"column"} marginTop={4}>
+          <Button
+            variant={"contained"}
+            color={"error"}
+            onClick={handleLogOut}
+            disableElevation
+          >
+            Log Out
+          </Button>
         </Box>
 
         <Snackbar
