@@ -10,8 +10,14 @@ const useUser = () => {
 
   const [user, setUser] = useState(getUser())
 
+  const saveUser = (username) => {
+    window.localStorage.setItem(STORAGE_KEY, username)
+    setUser(username)
+  }
+
   return {
     user,
+    saveUser,
   }
 }
 

@@ -49,7 +49,6 @@ const ProfilePage = ({ user }) => {
     setDialog("Confirmation", "Do you want to delete your account?")
   }
 
-  // TODO: test this
   const handleDelete = async () => {
     console.log("Delete Account Confirmation :>> pressed")
     console.log("user :>> ", user)

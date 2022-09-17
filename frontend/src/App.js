@@ -16,7 +16,7 @@ import ProfilePage from "./pages/ProfilePage"
 import useUser from "./hooks/useUser"
 
 function App() {
-  const { user } = useUser()
+  const { user, saveUser } = useUser()
 
   return (
     <div className="App">
@@ -27,7 +27,7 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/signup" element={<ContributePage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
           <Route path="/matching" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/profile" element={<ProfilePage user={user} />} />
