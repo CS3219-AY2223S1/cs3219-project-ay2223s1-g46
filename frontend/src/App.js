@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom"
 import HomePage from "./pages/HomePage"
 import SignupPage from "./pages/SignupPage"
 import ProblemPage from "./pages/ProblemPage"
@@ -26,10 +31,21 @@ function App() {
           <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
           <Route path="/matching" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
-          <Route path="/profile" element={<ProfilePage user={user} />} />
+          <Route
+            path="/profile"
+            element={
+              user ? <ProfilePage user={user} /> : <Navigate to="/"></Navigate>
+            }
+          />
           <Route
             path="/change-password"
-            element={<ChangePasswordPage user={user}></ChangePasswordPage>}
+            element={
+              user ? (
+                <ChangePasswordPage user={user}></ChangePasswordPage>
+              ) : (
+                <Navigate to="/"></Navigate>
+              )
+            }
           ></Route>
         </Routes>
       </Router>
