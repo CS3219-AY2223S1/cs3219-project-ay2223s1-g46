@@ -140,7 +140,12 @@ export async function deleteUser(req, res) {
 
 export async function updatePassword(req, res) {
   try {
-    const { username, oldPassword, newPassword } = req.body
+    // taking username from body, so i need to send
+    // if taking from cookie, should be
+    // const username = req.username
+    // const { username, oldPassword, newPassword } = req.body
+    const username = req.username
+    const { oldPassword, newPassword } = req.body
 
     if (username && oldPassword && newPassword) {
       const userExists = await _checkUserExist(username)
