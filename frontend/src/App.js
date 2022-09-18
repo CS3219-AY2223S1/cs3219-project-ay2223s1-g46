@@ -14,9 +14,10 @@ import EditorPage from "./pages/EditorPage"
 import NavBar from "./components/NavBar"
 import ProfilePage from "./pages/ProfilePage"
 import useUser from "./hooks/useUser"
+import ChangePasswordPage from "./pages/ChangePasswordPage"
 
 function App() {
-  const { user } = useUser()
+  const { user, saveUser, removeUser } = useUser()
 
   return (
     <div className="App">
@@ -27,10 +28,29 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/signup" element={<ContributePage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
           <Route path="/matching" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
-          <Route path="/profile" element={<ProfilePage user={user} />} />
+          <Route
+            path="/profile"
+            element={
+              user ? (
+                <ProfilePage user={user} removeUser={removeUser} />
+              ) : (
+                <Navigate to="/"></Navigate>
+              )
+            }
+          />
+          <Route
+            path="/change-password"
+            element={
+              user ? (
+                <ChangePasswordPage user={user}></ChangePasswordPage>
+              ) : (
+                <Navigate to="/"></Navigate>
+              )
+            }
+          ></Route>
         </Routes>
       </Router>
     </div>

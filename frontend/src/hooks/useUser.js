@@ -10,8 +10,20 @@ const useUser = () => {
 
   const [user, setUser] = useState(getUser())
 
+  const saveUser = (username) => {
+    window.localStorage.setItem(STORAGE_KEY, username)
+    setUser(username)
+  }
+
+  const removeUser = () => {
+    window.localStorage.removeItem(STORAGE_KEY)
+    setUser(null)
+  }
+
   return {
     user,
+    saveUser,
+    removeUser,
   }
 }
 

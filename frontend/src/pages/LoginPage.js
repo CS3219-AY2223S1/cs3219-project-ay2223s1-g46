@@ -26,7 +26,7 @@ import "../components/css/LoginSignUpRedirectLink.css"
 
 // TODO: make responsive if needed (inputs get squashed for now)
 
-const LoginPage = () => {
+const LoginPage = ({ saveUser }) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -62,7 +62,7 @@ const LoginPage = () => {
       .catch((err) => {
         setIsSnackbarOpen(true)
         if (err.response.status === STATUS_CODE_UNAUTHORIZED) {
-          setErrorSnackbar(err.response.title, err.response.message)
+          setErrorSnackbar(err.response.data.title, err.response.data.message)
         } else if (err.response.status === STATUS_CODE_INVALID) {
           setErrorSnackbar("ERROR", err.response.data.message)
         } else {
@@ -71,8 +71,9 @@ const LoginPage = () => {
         }
       })
     if (res && res.status === STATUS_CODE_SUCCESS) {
-      localStorage.setItem("loggedUser", res.data.username)
+      saveUser(res.data.username)
       navigate("/")
+      console.log("logged in :>> ", res.data.username)
     }
   }
 
