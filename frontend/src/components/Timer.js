@@ -1,11 +1,11 @@
 import React, {useState, useRef, useEffect} from "react";
 import { Navigate, useNavigate } from "react-router";
+import io from "socket.io-client"
 import './css/Timer.css';
 
 function Timer() {
   const intervalRef = useRef(null)
   let navigate = useNavigate()
-
   const [timer, setTimer] = useState("00:00:00")
 
   function getTimeRemaining(endTime) {
@@ -27,14 +27,14 @@ function Timer() {
   }
 
   function clearTimer(endTime) {
-    setTimer("10")
+    setTimer("30")
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
     }
     const id = setInterval(() => {
       startTimer(endTime)
       if (endTime.getTime() <= Date.now()) {
-        navigate(`/problems`)
+        //Todo if time runs out
       }
     }, 1000)
     intervalRef.current = id
@@ -42,7 +42,7 @@ function Timer() {
 
   function getDeadlineTime() {
     let deadline = new Date()
-    deadline.setSeconds(deadline.getSeconds() + 10)
+    deadline.setSeconds(deadline.getSeconds() + 30)
     return deadline
   }
 

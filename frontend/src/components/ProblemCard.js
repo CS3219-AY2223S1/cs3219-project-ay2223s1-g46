@@ -10,7 +10,7 @@ import {useNavigate} from "react-router-dom";
 import './css/ProblemCard.css';
 import io from 'socket.io-client'
 
-export default function ProblemCard({username,difficulty,color,image,text}) {
+export default function ProblemCard({difficulty,color,image,text}) {
   let navigate = useNavigate();
   
   const matchDifficulty = () => {
