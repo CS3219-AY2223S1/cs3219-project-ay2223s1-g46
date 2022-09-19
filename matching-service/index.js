@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
                 //Note: timeout_id doesn't work across worker threads
                 const timeout_id = +setTimeout(async () => {//Note: we have the plus to force conversion to number
                         await ormFlushPendingMatchById(socket.id);
-                        socket.emit("match_result", "Timeout, try again");
+                        socket.emit("matchFail", "Timeout, try again");
                         console.log("Timeout on socket " + socket.id)
                     }, 1000 * 30);
                 await ormCreatePendingMatch(username, socket.id, difficulty, timeout_id)
