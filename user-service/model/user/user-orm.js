@@ -1,9 +1,11 @@
-import { checkUserExist, compareHash, createJWT, createUser, getUser, deleteUser, updatePassword} from '../repository.js';
+import { checkUserExist, compareHash, createJWT, createUser, getUser, deleteUser, updatePassword, updateRole} from '../repository.js';
 
 //need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateUser(username, password) {
     try {
         const newUser = await createUser({username, password});
+        console.log(newUser)
+        console.log('orm')
         newUser.save();
         return true;
     } catch (err) {
@@ -68,6 +70,16 @@ export async function ormUpdatePassword(username, newPassword) {
         return updatedUser
     } catch (err) {
         console.log('ERROR: Could not updated user password');
+        return { err };
+    }
+}
+
+export async function ormUpdateRole(username, newRole) {
+    try {
+        const updatedUser = await updateRole(username, newRole)
+        return updatedUser
+    } catch (err) {
+        console.log('ERROR: Could not updated user role');
         return { err };
     }
 }

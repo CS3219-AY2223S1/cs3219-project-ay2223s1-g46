@@ -6,9 +6,11 @@ import {
   ormGetUser as _getUser,
   ormDeleteUser as _deleteUser,
   ormUpdatePassword as _updatePassword,
+  ormUpdateRole as _updateRole,
 } from '../model/user/user-orm.js'
 
 import { ormBlacklistToken as _blacklistToken } from '../model/token/token-orm.js'
+import roles from '../utils/role.js'
 
 export async function createUser(req, res) {
   try {
@@ -67,7 +69,7 @@ export async function loginUser(req, res) {
       const token = await _createJWT(user)
 
       res.cookie('token', token, { httpOnly: true })
-      res.json({ token, username: user.username })
+      res.json({ token, username: user.username, role: user.role })
 
       console.log(`Logged in with username ${username} successfully!`)
       return res.status(200)
@@ -157,13 +159,13 @@ export async function updatePassword(req, res) {
         })
       }
 
-      // req.username from jwt in middleware
-      if (req.username !== username) {
-        return res.status(401).json({
-          title: 'Unable to change password',
-          message: 'This account does not belong to you!',
-        })
-      }
+      // compare req.username from jwt in middleware to username in req.body
+    //   if (req.username !== username) {
+    //     return res.status(401).json({
+    //       title: 'Unable to change password',
+    //       message: 'This account does not belong to you!',
+    //     })
+    //   }
 
       const validHash = await _compareHash(username, oldPassword)
       if (!validHash) {
@@ -196,4 +198,67 @@ export async function updatePassword(req, res) {
       .status(500)
       .json({ message: 'Database Failure when deleting user!' })
   }
+}
+
+export async function updateRole(req, res) {
+    try {
+        const username = req.username
+        const { password, newRole } = req.body
+    
+        if (username && password && newRole) {
+          const userExists = await _checkUserExist(username)
+    
+          if (!userExists) {
+            return res.status(401).json({
+              title: 'Invalid username',
+              message: 'This username does not exist!',
+            })
+          }
+
+          if (!(newRole in roles)) {
+            return res.status(401).json({
+                title: 'Invalid role',
+                message: 'This role does not exist!',
+              })
+          }
+    
+          const validHash = await _compareHash(username, password)
+          if (!validHash) {
+            return res.status(401).json({
+              title: 'Unable to change password',
+              message: 'The password does not match this user!',
+            })
+          }
+
+          const user = await _getUser(username)
+          if (user.role === newRole) {
+            return res.status(401).json({
+                title: 'Unable to change role',
+                message: 'The new role is same as the current role!',
+            })
+          }
+
+          // get updated user with new role
+          const updatedUser = await _updateRole(username, newRole)
+
+          // update jwt in cookie with new role
+          const token = await _createJWT(updatedUser)
+          res.cookie('token', token, { httpOnly: true })
+          res.json({ token, username: updatedUser.username, role: updatedUser.role, message: 'Successfully changed role!'  })
+    
+          console.log(`Changed role of user ${req.username} successfully!`)
+    
+          return res.status(200)
+        } else {
+          return res.status(400).json({
+            message: 'Username or password or new role is missing!',
+          })
+        }
+      } catch (err) {
+        console.log(err)
+        return res
+          .status(500)
+          .json({ message: 'Database Failure when updating role!' })
+      }
+
 }

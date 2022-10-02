@@ -3,6 +3,7 @@ import TokenModel from './token/token-model.js';
 import 'dotenv/config'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import roles from '../utils/role.js';
 
 //Set up mongoose connection
 import mongoose from 'mongoose';
@@ -22,8 +23,10 @@ export async function createUser({username, password}) {
 
   // autogen salt and hash
   const passwordHash = await bcrypt.hash(password, saltRounds)
+  const role = roles.Student
 
-  return new UserModel({username, passwordHash})
+
+  return new UserModel({username, passwordHash, role})
 }
 
 export async function checkUserExist(username) {
@@ -52,6 +55,7 @@ export async function compareHash(username, password) {
 export async function createJWT(user) {
   const userForToken = {
     username: user.username,
+    role: user.role
   }
   const token = jwt.sign(userForToken, process.env.SECRET)
   return token
@@ -67,6 +71,7 @@ export async function updatePassword(username, newPassword) {
   // autogen salt and hash
   const passwordHash = await bcrypt.hash(newPassword, saltRounds)
 
+  // may need to update with role
   const updatedUser = await UserModel.findOneAndUpdate(
     { "username" : username},
     { passwordHash },
@@ -75,6 +80,17 @@ export async function updatePassword(username, newPassword) {
 
   return updatedUser
 
+}
+
+export async function updateRole(username, newRole) {
+  const role = newRole
+
+  const updatedUser = await UserModel.findOneAndUpdate(
+    { "username" : username},
+    { role },
+    { new: true, runValidators: true, context: 'query' }
+  )
+  return updatedUser
 }
 
 export async function checkTokenBlacklisted(token) {

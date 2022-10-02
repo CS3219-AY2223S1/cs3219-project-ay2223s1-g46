@@ -9,7 +9,7 @@ app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
 app.use(cookieParser());
-import { createUser, deleteUser, logoutUser, updatePassword, loginUser } from './controller/user-controller.js';
+import { createUser, deleteUser, logoutUser, updatePassword, loginUser, updateRole } from './controller/user-controller.js';
 
 const userRouter = express.Router()
 
@@ -19,6 +19,7 @@ userRouter.post('/', createUser)
 // need to check if works
 userRouter.put('/password', authorization, updatePassword)
 userRouter.delete('/delete', authorization, deleteUser)
+userRouter.put('/role', authorization, updateRole)
 
 app.use('/api/user', userRouter).all((_, res) => {
     res.setHeader('content-type', 'application/json')
@@ -40,11 +41,11 @@ app.use('/api/logout', logoutRouter).all((_, res) => {
 })
 
 // for testing authorization
-const protectedRouter = express.Router()
-protectedRouter.get('/', authorization, (req, res) => {
-    return res.json({user: {username: req.username}});
+const verifyRouter = express.Router()
+verifyRouter.get('/', authorization, (req, res) => {
+    return res.json({user: {username: req.username, role: req.role}});
 });
-app.use('/api/protected', protectedRouter).all((_, res) => {
+app.use('/api/verify', verifyRouter).all((_, res) => {
     res.setHeader('content-type', 'application/json')
     res.setHeader('Access-Control-Allow-Origin', '*')
 })
