@@ -4,15 +4,17 @@ const useUser = () => {
   const STORAGE_KEY = "loggedUser"
 
   const getUser = () => {
-    const user = window.localStorage.getItem(STORAGE_KEY)
+    const object = window.localStorage.getItem(STORAGE_KEY)
+    const user = JSON.parse(object)
     return user
   }
 
   const [user, setUser] = useState(getUser())
 
-  const saveUser = (username) => {
-    window.localStorage.setItem(STORAGE_KEY, username)
-    setUser(username)
+  const saveUser = (username, role) => {
+    const userObject = { username, role }
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(userObject))
+    setUser(userObject)
   }
 
   const removeUser = () => {

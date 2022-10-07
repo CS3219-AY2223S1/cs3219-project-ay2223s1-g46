@@ -26,12 +26,11 @@ import {
 } from "../constants"
 
 const ProfilePage = ({ user, removeUser }) => {
-  //   const [username, setUsername] = useState("TODO: fill in")
-
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [snackbarTitle, setSnackbarTitle] = useState("")
   const [snackbarMsg, setSnackbarMsg] = useState("")
 
+  const [isDeleteDialog, setIsDeleteDialog] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [dialogTitle, setDialogTitle] = useState("")
   const [dialogMsg, setDialogMsg] = useState("")
@@ -44,9 +43,20 @@ const ProfilePage = ({ user, removeUser }) => {
     navigate("/change-password")
   }
 
+  // used by change role button
+  const handleChangeRole = () => {
+    console.log("Change Role :>> pressed")
+    setIsDeleteDialog(false)
+    setDialog(
+      "Instructions",
+      "If you wish to upgrade your role to be part of the teaching team, please email cs3219.g46@gmail.com with your username with your credentials. Upon successful verification we will update your role!"
+    )
+  }
+
   // used by delete account button
   const handleDeleteConfirmation = () => {
     console.log("Delete Account :>> pressed")
+    setIsDeleteDialog(true)
     setDialog("Confirmation", "Do you want to delete your account?")
   }
 
@@ -153,11 +163,29 @@ const ProfilePage = ({ user, removeUser }) => {
             label="Username"
             variant="outlined"
             size="small"
-            sx={{ marginBottom: "1rem" }}
-            value={user}
+            sx={{ marginBottom: 1 }}
+            value={user.username}
             inputProps={{ readOnly: true }}
           />
+          <TextField
+            label="Role"
+            variant="outlined"
+            size="small"
+            sx={{ marginBottom: "1rem" }}
+            value={user.role}
+            inputProps={{ readOnly: true }}
+          />
+
           <Box display={"flex"} flexDirection={"column"} marginTop={2}>
+            <Button
+              variant={"contained"}
+              onClick={handleChangeRole}
+              disableElevation
+            >
+              Change role
+            </Button>
+          </Box>
+          <Box display={"flex"} flexDirection={"column"}>
             <Button
               variant={"contained"}
               onClick={handleChangePassword}
@@ -206,20 +234,28 @@ const ProfilePage = ({ user, removeUser }) => {
           <DialogContent>
             <DialogContentText>{dialogMsg}</DialogContentText>
           </DialogContent>
-          <DialogActions>
-            {toDelete ? (
-              <Button component={Link} to="/">
-                Return to main page
-              </Button>
-            ) : (
-              <Box>
-                <Button color="error" onClick={handleDelete}>
-                  Delete
+          {isDeleteDialog ? (
+            <DialogActions>
+              {toDelete ? (
+                <Button component={Link} to="/">
+                  Return to main page
                 </Button>
-                <Button onClick={closeDialog}>Return</Button>
+              ) : (
+                <Box>
+                  <Button color="error" onClick={handleDelete}>
+                    Delete
+                  </Button>
+                  <Button onClick={closeDialog}>Return</Button>
+                </Box>
+              )}
+            </DialogActions>
+          ) : (
+            <DialogActions>
+              <Box>
+                <Button onClick={closeDialog}>Close</Button>
               </Box>
-            )}
-          </DialogActions>
+            </DialogActions>
+          )}
         </Dialog>
       </Box>
     </Box>

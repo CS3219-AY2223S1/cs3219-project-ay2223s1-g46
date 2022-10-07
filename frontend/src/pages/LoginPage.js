@@ -71,7 +71,7 @@ const LoginPage = ({ saveUser }) => {
         }
       })
     if (res && res.status === STATUS_CODE_SUCCESS) {
-      saveUser(res.data.username)
+      saveUser(res.data.username, res.data.role)
       navigate("/")
       console.log("logged in :>> ", res.data.username)
     }
