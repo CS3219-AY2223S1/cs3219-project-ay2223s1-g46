@@ -9,6 +9,10 @@ let UserModelSchema = new Schema({
     passwordHash: {
         type: String,
         required: true,
+    },
+    role: {
+        type:String,
+        required: true,
     }
 })
 

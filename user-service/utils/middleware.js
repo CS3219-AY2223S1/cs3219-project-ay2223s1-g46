@@ -17,7 +17,9 @@ export async function authorization(req, res, next) {
 
     try {
         const data = jwt.verify(token, process.env.SECRET);
+        console.log(data)
         req.username = data.username;
+        req.role = data.role
         return next();
     } catch {
         return res.status(403).json({message: 'No cookie found!'});
