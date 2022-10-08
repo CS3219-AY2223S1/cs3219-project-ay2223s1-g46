@@ -6,7 +6,7 @@ import axios from 'axios';
 export async function authorization(req, res, next) {
     const token = req.cookies.token;
     const verifyURL = 'http://localhost:8000/api/verify'
-    console.log('auth')
+    // console.log('auth')
     if (!token) {
         return res.status(403).json({message: 'No cookie found!'});
     }
@@ -14,12 +14,10 @@ export async function authorization(req, res, next) {
         const data = jwt.verify(token, process.env.SECRET);
         // if the user has a cookie with jsonwebtoken varify the cookie using verify with user service
         // maybe jsut send token string to verify to check again
-        const res = await axios.get(verifyURL).catch((err) => {
-            console.log(err.response)
-            return res.status(404)
-        })
-
-
+        const tokenObject = {
+            token: token
+        }
+        const res = await axios.post(verifyURL,tokenObject)
 
         console.log(data)
         req.username = data.username;
@@ -31,7 +29,8 @@ export async function authorization(req, res, next) {
         }
 
         return next();
-    } catch {
+    } catch(err) {
+        console.log(err.response.data.message)
         return res.status(403).json({message: 'Error with cookie found!'});
     }
 };
