@@ -15,12 +15,17 @@ import { Link } from "react-router-dom"
 import "./css/NavBar.css"
 
 // const pages = ["contribute", "problems", "login", "signup", "profile"]
-const loggedOutPages = ["login", "signup"]
-const loggedInPages = ["contribute", "problems", "profile"]
 
 const NavBar = ({ user }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
-  console.log("user.username :>> ", user.username)
+
+  const loggedOutPages = ["login", "signup"]
+  // only teaching team and admin can access questions page
+  const loggedInPages =
+    user && user.role === "Student"
+      ? ["contribute", "problems", "profile"]
+      : ["contribute", "problems", "questions", "profile"]
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
   }
@@ -82,7 +87,7 @@ const NavBar = ({ user }) => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {user.username
+              {user && user.username
                 ? loggedInPages.map((page) => (
                     <MenuItem key={page} onClick={handleCloseNavMenu}>
                       <Link
@@ -125,7 +130,7 @@ const NavBar = ({ user }) => {
             }}
             gap={2}
           >
-            {user.username
+            {user && user.username
               ? loggedInPages.map((page) => (
                   <Button
                     key={page}
