@@ -14,11 +14,13 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { Link } from "react-router-dom"
 import "./css/NavBar.css"
 
-const pages = ["contribute", "problems", "login", "signup", "profile"]
+// const pages = ["contribute", "problems", "login", "signup", "profile"]
+const loggedOutPages = ["login", "signup"]
+const loggedInPages = ["contribute", "problems", "profile"]
 
-const NavBar = () => {
+const NavBar = ({ user }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
-
+  console.log("user.username :>> ", user.username)
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
   }
@@ -26,16 +28,16 @@ const NavBar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null)
   }
-
+  // background color was #6E6E30
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#6E6E30" }}>
+    <AppBar position="static" sx={{ backgroundColor: "#54c9bf" }} elevation={2}>
       <Container maxWidth="xl">
         <Toolbar
           disableGutters
           sx={{
             display: { xs: "flex" },
             flexDirection: "row",
-            backgroundColor: "#6E6E30",
+            backgroundColor: "#54c9bf",
             justifyContent: "space-between",
           }}
         >
@@ -47,7 +49,9 @@ const NavBar = () => {
             color="black"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            PeerPrep
+            <Link to={"/"} style={{ textDecoration: "none", color: "black" }}>
+              PeerPrep
+            </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -78,13 +82,29 @@ const NavBar = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <Link to={`/${page}`}>{page}</Link>
-                  </Typography>
-                </MenuItem>
-              ))}
+              {user.username
+                ? loggedInPages.map((page) => (
+                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                      <Link
+                        to={`/${page}`}
+                        style={{ textDecoration: "none", color: "black" }}
+                      >
+                        {page}
+                      </Link>
+                    </MenuItem>
+                  ))
+                : loggedOutPages.map((page) => (
+                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        <Link
+                          to={`/${page}`}
+                          style={{ textDecoration: "none", color: "black" }}
+                        >
+                          {page}
+                        </Link>
+                      </Typography>
+                    </MenuItem>
+                  ))}
             </Menu>
           </Box>
           <Typography
@@ -94,23 +114,46 @@ const NavBar = () => {
             color="black"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
-            PeerPrep
+            <Link to={"/"} style={{ textDecoration: "none", color: "black" }}>
+              PeerPrep
+            </Link>
           </Typography>
 
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
             }}
+            gap={2}
           >
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "black", display: "block" }}
-              >
-                <Link to={`/${page}`}>{page}</Link>
-              </Button>
-            ))}
+            {user.username
+              ? loggedInPages.map((page) => (
+                  <Button
+                    key={page}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "black", display: "block" }}
+                  >
+                    <Link
+                      to={`/${page}`}
+                      style={{ textDecoration: "none", color: "black" }}
+                    >
+                      {page}
+                    </Link>
+                  </Button>
+                ))
+              : loggedOutPages.map((page) => (
+                  <Button
+                    key={page}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "black", display: "block" }}
+                  >
+                    <Link
+                      to={`/${page}`}
+                      style={{ textDecoration: "none", color: "black" }}
+                    >
+                      {page}
+                    </Link>
+                  </Button>
+                ))}
           </Box>
         </Toolbar>
       </Container>

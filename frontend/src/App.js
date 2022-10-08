@@ -18,11 +18,12 @@ import ChangePasswordPage from "./pages/ChangePasswordPage"
 
 function App() {
   const { user, saveUser, removeUser } = useUser()
+  // user has user.username and user.role
 
   return (
     <div className="App">
       <Router>
-        <NavBar />
+        <NavBar user={user} />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignupPage />} />
