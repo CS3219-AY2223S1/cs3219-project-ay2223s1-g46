@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import { ormCreatePendingMatch, ormClaimFirstMatchByDifficulty, ormFlushPendingMatchById } from "./model/pendingMatch-orm.js"
 import { v4 as uuidv4 } from 'uuid';
 import { addLeaveRoomCallback } from "./controller/leaveRoomController.js";
+import { abortPendingMatch } from './controller/abortPendingMatch.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -25,12 +26,6 @@ const httpServer = createServer(app)
 const io = new Server(httpServer, { /* options */ });
 io.on("connection", (socket) => {
     console.log("Logging socket connection")
-    const abortPendingMatch = async () => {
-        var existing_match = await ormFlushPendingMatchById(socket.id);
-        if (existing_match) {
-            clearTimeout(existing_match.timeout_id);
-        }
-    }
     socket.on("abort_match", abortPendingMatch);
     socket.on("match", async (username, difficulty) => {
         for (const room of socket.rooms) {
