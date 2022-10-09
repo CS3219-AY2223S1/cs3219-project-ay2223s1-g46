@@ -1,4 +1,4 @@
-import { KeyboardArrowDown } from "@mui/icons-material"
+import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material"
 import { Box, Collapse, IconButton, TableCell, TableRow } from "@mui/material"
 import { Fragment, useState } from "react"
 
@@ -14,19 +14,19 @@ const CollapsibleTableRow = ({ row }) => {
             size="small"
             onClick={() => setOpen(!open)}
           >
-            {open ? <KeyboardArrowDown /> : <KeyboardArrowDown />}
+            {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
           {row.name}
         </TableCell>
-        <TableCell align="right">{row.category}</TableCell>
-        <TableCell align="right">{row.difficulty}</TableCell>
+        <TableCell align="center">{row.topic}</TableCell>
+        <TableCell align="center">{row.difficulty}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>{row.question}</Box>
+            <Box sx={{ margin: 1 }}>{row.text}</Box>
           </Collapse>
         </TableCell>
       </TableRow>
