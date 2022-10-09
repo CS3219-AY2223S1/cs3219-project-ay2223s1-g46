@@ -1,8 +1,8 @@
 export function addLeaveRoomCallback (io, socket, username) {
     const leaveRoomCallback = () => {
 
-        lonely_socket.removeAllListeners("disconnecting");
-        lonely_socket.removeAllListeners("leave_room");
+        socket.removeAllListeners("disconnecting");
+        socket.removeAllListeners("leave_room");
 
         for (const room of socket.rooms) {
             if (room !== socket.id) {
