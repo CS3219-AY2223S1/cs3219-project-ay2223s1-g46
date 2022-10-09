@@ -14,10 +14,7 @@ export default function ProblemCard({difficulty,color,image,text}) {
   let navigate = useNavigate();
   
   const matchDifficulty = () => {
-    const socket = io('http://localhost:8001/', {
-      transports: ['websocket'],
-    })
-    navigate("../matching");
+    navigate("../matching/" + difficulty.toLowerCase());
   }
 
   return (

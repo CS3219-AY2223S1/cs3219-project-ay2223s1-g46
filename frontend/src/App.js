@@ -29,7 +29,7 @@ function App() {
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/signup" element={<ContributePage />} />
           <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
-          <Route path="/matching" element={<MatchingPage />} />
+          <Route path="/matching/:difficulty" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route
             path="/profile"
