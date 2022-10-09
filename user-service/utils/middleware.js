@@ -28,7 +28,7 @@ export async function authorization(req, res, next) {
 
 export async function verifyTokenString(req, res, next) {
     const {token} = req.body
-    console.log('verifytokenstring', token)
+    // console.log('verifytokenstring', token)
 
     if (!token) {
         return res.status(403).json({message: 'No token found!'});
