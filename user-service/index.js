@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { authorization } from './utils/middleware.js';
+import { authorization, verifyTokenString } from './utils/middleware.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -42,7 +42,7 @@ app.use('/api/logout', logoutRouter).all((_, res) => {
 
 // for testing authorization
 const verifyRouter = express.Router()
-verifyRouter.get('/', authorization, (req, res) => {
+verifyRouter.post('/', verifyTokenString, (req, res) => {
     return res.json({user: {username: req.username, role: req.role}});
 });
 app.use('/api/verify', verifyRouter).all((_, res) => {
