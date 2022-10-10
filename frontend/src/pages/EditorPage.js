@@ -1,7 +1,8 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { Button} from "@mui/material"
+import { Button, Box} from "@mui/material"
 import { CodeEditor } from "../components/CodeEditor"
+import { Chat } from "../components/Chat"
 import io from "socket.io-client"
 import "../components/css/EditorPage.css"
 
@@ -18,7 +19,15 @@ function EditorPage() {
 
   return (
     <div className="Editor">
+      <Box
+        display="flex" 
+      >
       <CodeEditor className="code" />
+      </Box>
+      <Box 
+        display="flex"
+        alignItems="center"
+        justifyContent="center">
         <Button
           variant={"contained"}
           onClick={leaveRoom}
@@ -26,6 +35,13 @@ function EditorPage() {
         >
           Leave Room
         </Button>
+        </Box>
+        <Box
+        display="flex"
+        alignItems="flex-end"
+        justifyContent="flex-end">
+        <Chat/>
+        </Box>
     </div>
   )
 }
