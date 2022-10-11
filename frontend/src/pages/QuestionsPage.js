@@ -33,6 +33,8 @@ import { URL_QUESTION_SVC } from "../configs"
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions"
 import CollapsibleTableRow from "../components/CollapsibleTableRow"
 import {
+  STATUS_CODE_CONFLICT,
+  STATUS_CODE_INTERAL_ERROR,
   STATUS_CODE_INVALID,
   STATUS_CODE_SUCCESS,
   STATUS_CODE_UNAUTHORIZED,
@@ -43,14 +45,7 @@ const QuestionsPage = () => {
   const TOPICS = ["Graph", "Array", "String", "Dynamic Programming", "Others"]
   const DIFFICULTY = ["Easy", "Medium", "Hard"]
 
-  const [questions, setQuestions] = useState([
-    {
-      name: "test",
-      topic: "Dynamic Programming",
-      difficulty: "Medium",
-      text: "ndsjifnsdifnaisnfisanckasnckjsancjkasnknasknsa hola hola fdofnsodfnosfnsonos fdisnfosnfosdnfosnfosdnfosddnfodisnf iwfiduhfifhifhcihmiwmhfiqfhmwihmwqi",
-    },
-  ])
+  const [questions, setQuestions] = useState([])
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [questionName, setQuestionName] = useState("")
@@ -64,12 +59,17 @@ const QuestionsPage = () => {
   const [snackbarTitle, setSnackbarTitle] = useState("")
   const [snackbarMsg, setSnackbarMsg] = useState("")
 
-  //   useEffect(() => {
-  //     console.log("questions page effect")
-  //     axios.get(URL_QUESTION_SVC).then((response) => {
-  //       setQuestions(response.data.questions)
-  //     })
-  //   }, [])
+  useEffect(() => {
+    console.log("questions page effect")
+    axios
+      .get(URL_QUESTION_SVC)
+      .then((response) => {
+        setQuestions(response.data.questions)
+      })
+      .catch((error) => {
+        console.log("error :>> ", error)
+      })
+  }, [])
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -123,6 +123,7 @@ const QuestionsPage = () => {
         "Missing Field(s)",
         "Please fill in all of the fields above."
       )
+      return
     }
 
     let parsedTopic = topic
@@ -130,25 +131,36 @@ const QuestionsPage = () => {
       parsedTopic = "DP"
     }
 
-    const res = await axios
-      .post(URL_QUESTION_SVC, {
-        name: questionName,
-        text: questionDetails,
-        parsedTopic,
-        difficulty,
-      })
-      .catch((err) => {
-        setIsSnackbarOpen(true)
-        if (err.response.status === STATUS_CODE_UNAUTHORIZED) {
-          setErrorSnackbar(err.response.data.title, err.response.data.message)
-        } else if (err.response.status === STATUS_CODE_INVALID) {
-          setErrorSnackbar("ERROR", err.response.data.message)
-        } else {
-          setErrorSnackbar("Unknown Error", "Please try again.") //TODO: custom title?
-          console.log("err.response :>> ", err.response)
-        }
-      })
+    const newQuestion = {
+      name: questionName,
+      text: questionDetails,
+      topic: parsedTopic,
+      difficulty,
+    }
+
+    const res = await axios.post(URL_QUESTION_SVC, newQuestion).catch((err) => {
+      setIsSnackbarOpen(true)
+      if (err.response.status === STATUS_CODE_INTERAL_ERROR) {
+        setErrorSnackbar("ERROR", err.response.data.message)
+      } else if (err.response.status === STATUS_CODE_UNAUTHORIZED) {
+        setErrorSnackbar(err.response.data.title, err.response.data.message)
+      } else if (err.response.status === STATUS_CODE_CONFLICT) {
+        setErrorSnackbar("ERROR", err.response.data.message)
+      } else if (err.response.status === STATUS_CODE_INVALID) {
+        setErrorSnackbar("ERROR", err.response.data.message)
+      } else {
+        setErrorSnackbar("Unknown Error", "Please try again.") //TODO: custom title?
+        console.log("err.response :>> ", err.response)
+      }
+    })
     if (res && res.status === STATUS_CODE_SUCCESS) {
+      const updatedQuestions = [...questions, newQuestion]
+      setQuestions(updatedQuestions)
+      setOpenDialog(false)
+      setDifficulty("")
+      setQuestionDetails("")
+      setQuestionName("")
+      setTopic("")
     }
   }
 
