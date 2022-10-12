@@ -1,5 +1,6 @@
-import { TextField } from "@mui/material"
+import { TextField,Button,Grid,Card,Paper,ListItem,ListItemText, List } from "@mui/material"
 import React, { useEffect, useRef, useState } from "react"
+import SendIcon from '@mui/icons-material/Send';
 import io from "socket.io-client"
 import useUser from "../hooks/useUser"
 
@@ -37,22 +38,24 @@ export const Chat = () => {
 
 	const renderChat = () => {
 		return chat.map(({ name, message }, index) => (
-			<div key={index}>
-				<h3>
+			<ListItem key={index}>
+				<ListItemText>
 					{name}: <span>{message}</span>
-				</h3>
-			</div>
+				</ListItemText>
+			</ListItem>
 		))
 	}
 
 	return (
-		<div className="card">
-			<form onSubmit={onMessageSubmit}>
-                <div className="render-chat">
-                    <h1>Chat Log</h1>
-                    {renderChat()}
-                </div>
-				<div>
+		<div className="chat">
+			<h1>Chat Log</h1>
+			<Paper style={{height: 300, overflow: 'auto', display: 'flex', flexDirection:'column-reverse'}} >
+				<List className="render-chat" alignItems='column'>
+					{renderChat()}
+				</List>
+			</Paper>
+			<Grid container>
+				<Grid item>
 					<TextField
 						name="message"
 						onChange={(e) => onTextChange(e)}
@@ -60,10 +63,26 @@ export const Chat = () => {
 						id="outlined-multiline-static"
 						variant="outlined"
 						label="Message"
-					/>
-				</div>
-				<button>Send Message</button>
-			</form>
+						onKeyPress={(e) => {
+							if (e.key === 'Enter') {
+								const { name, message } = state
+								socket.emit("message", { name, message })
+								e.preventDefault()
+								setState({ message: "", name })							
+							}
+						  }}
+					/>	
+				</Grid>	
+				<Grid item alignItems="stretch" style={{ display: "flex" }}>			
+					<Button
+						variant="contained"
+						aria-label='send'
+						onClick={onMessageSubmit}
+						>
+						<SendIcon fontSize="inherit" />
+					</Button>
+				</Grid>
+			</Grid>	
 		</div>
 	)
 }

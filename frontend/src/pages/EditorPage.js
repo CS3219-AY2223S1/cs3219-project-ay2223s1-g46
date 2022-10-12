@@ -20,28 +20,33 @@ function EditorPage() {
   return (
     <div className="Editor">
       <Box
-        display="flex" 
+      display="flex" 
+      flexDirection= 'row'
+      justifyContent='space-around'
+      alignitems='center'
       >
-      <CodeEditor className="code" />
-      </Box>
-      <Box 
-        display="flex"
-        alignItems="center"
-        justifyContent="center">
-        <Button
-          variant={"contained"}
-          onClick={leaveRoom}
-          disableElevation
+        <Box
+          display="flex" 
+          flexDirection= 'column'
+          width = '60%' 
         >
-          Leave Room
-        </Button>
+          <CodeEditor className="code" />
+          <Button
+            variant={"contained"}
+            onClick={leaveRoom}
+            width = '80%'
+            disableElevation
+          >
+            Leave Room
+          </Button>
         </Box>
         <Box
         display="flex"
         alignItems="flex-end"
         justifyContent="flex-end">
-        <Chat/>
+          <Chat/>
         </Box>
+      </Box>
     </div>
   )
 }
