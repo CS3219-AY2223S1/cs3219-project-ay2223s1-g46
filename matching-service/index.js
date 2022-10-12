@@ -30,6 +30,10 @@ io.on("connection", (socket) => {
             clearTimeout(existing_match.timeout_id);
         }
     }
+    socket.on('message', ({ name, message }) => {
+        console.log("Message sent")
+        io.emit('message', { name, message })
+      })
     socket.on("abort_match", abortPendingMatch);
     socket.on("match", async (username, difficulty) => {
         for (const room of socket.rooms) {

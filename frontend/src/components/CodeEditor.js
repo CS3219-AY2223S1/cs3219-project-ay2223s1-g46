@@ -1,11 +1,14 @@
-import "./css/CodeEditor.css";
+import { TextField } from "@mui/material"
 
-export const CodeEditor = ({ placeHolder, onChange, onKeyDown }) => {
+export const CodeEditor = () => {
   return (
-    <textarea
+    <TextField
+      id="outlined-basic" 
+      multiline
+      rows = {15}
+      label="Code Here" 
+      variant="outlined"
       className="editor"
-      placeholder={placeHolder}
-      onChange={onChange}
-    ></textarea>
+    ></TextField>
   );
 };

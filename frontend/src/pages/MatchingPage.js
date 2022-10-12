@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react"
 import Timer from "../components/Timer"
 import "../components/css/MatchingPage.css"
 import io from "socket.io-client"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { Button, Box } from "@mui/material"
 import useUser from "../hooks/useUser"
 
@@ -11,6 +11,7 @@ const MatchingPage = () => {
 let navigate = useNavigate()
 const [isTimeout, setTimeout] = useState(false)
 const { user, saveUser, removeUser } = useUser()
+const {difficulty} = useParams()
 
 const socket = io("http://localhost:8001/", {
   transports: ["websocket"],
@@ -18,7 +19,8 @@ const socket = io("http://localhost:8001/", {
 
 // change to user after logging in
 useEffect(() => {
-  socket.emit("match", "jacob", "Easy") 
+  console.log(difficulty);
+  socket.emit("match", user, difficulty) 
 }, []);
 
 socket.on("match_user", () => {
