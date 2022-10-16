@@ -1,21 +1,22 @@
 import {
   ormCreateQuestion as _createQuestion,
   ormCheckQuestionExist as _checkQuestionExists,
-  ormGetAllQuestions as _getAllQuestions
+  ormGetAllQuestions as _getAllQuestions,
 } from '../model/question-orm.js'
 import topics from '../utils/topic.js'
 import difficultyList from '../utils/difficulty.js'
 
-
 export async function getAllQuestions(req, res) {
   try {
-    const resp = await _getAllQuestions();
+    const resp = await _getAllQuestions()
 
     if (resp.err) {
-      return res.status(400).json({ message: 'Could not create a new question!' })
+      return res
+        .status(400)
+        .json({ message: 'Could not create a new question!' })
     } else {
       console.log(`Got all questions successfully!`)
-      return res.json({ questions: resp.questions})
+      return res.json({ questions: resp.questions })
     }
   } catch (err) {
     return res
@@ -23,7 +24,6 @@ export async function getAllQuestions(req, res) {
       .json({ message: 'Database failure when getting questions!' })
   }
 }
-
 
 export async function createQuestion(req, res) {
   try {
@@ -38,21 +38,23 @@ export async function createQuestion(req, res) {
 
       if (!(topic in topics)) {
         return res.status(401).json({
-            title: 'Invalid topic',
-            message: 'This topic does not exist!',
-          })
+          title: 'Invalid topic',
+          message: 'This topic does not exist!',
+        })
       }
 
       if (!(difficulty in difficultyList)) {
         return res.status(401).json({
-            title: 'Invalid difficulty',
-            message: 'This difficulty does not exist!',
-          })
+          title: 'Invalid difficulty',
+          message: 'This difficulty does not exist!',
+        })
       }
 
-      let resp = await _createQuestion(name, text, topic, difficulty);
+      let resp = await _createQuestion(name, text, difficulty, topic)
       if (resp.err) {
-        return res.status(400).json({ message: 'Could not create a new question!' })
+        return res
+          .status(400)
+          .json({ message: 'Could not create a new question!' })
       } else {
         console.log(`Created new question successfully!`)
         return res
@@ -61,8 +63,8 @@ export async function createQuestion(req, res) {
       }
     } else {
       return res
-      .status(400)
-      .json({ message: 'There are empty fields when creating a question!' })
+        .status(400)
+        .json({ message: 'There are empty fields when creating a question!' })
     }
   } catch (err) {
     console.log(err)

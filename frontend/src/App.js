@@ -15,22 +15,34 @@ import NavBar from "./components/NavBar"
 import ProfilePage from "./pages/ProfilePage"
 import useUser from "./hooks/useUser"
 import ChangePasswordPage from "./pages/ChangePasswordPage"
+import QuestionsPage from "./pages/QuestionsPage"
 
 function App() {
   const { user, saveUser, removeUser } = useUser()
+  // user has user.username and user.role
 
   return (
     <div className="App">
       <Router>
-        <NavBar />
+        <NavBar user={user} />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/problems" element={<ProblemPage />} />
           <Route path="/signup" element={<ContributePage />} />
           <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
-          <Route path="/matching" element={<MatchingPage />} />
+          <Route path="/matching/:difficulty" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
+          <Route
+            path="/questions"
+            element={
+              user && user.role !== "Student" ? (
+                <QuestionsPage></QuestionsPage>
+              ) : (
+                <Navigate to="/"></Navigate>
+              )
+            }
+          ></Route>
           <Route
             path="/profile"
             element={

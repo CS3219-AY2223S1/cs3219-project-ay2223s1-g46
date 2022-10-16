@@ -28,6 +28,12 @@ io.on("connection", (socket) => {
     socket.on("abort_match", abortPendingMatchFactory(socket));
     socket.on("match", attemptMatchFactory(io, socket));
     socket.on("disconnect", async (_) => {await ormFlushPendingMatchById(socket.id);});
+    
+    //Temp debug socket listener
+    socket.on('message', ({ name, message }) => {
+        console.log("Message sent")
+        io.emit('message', { name, message })
+      })
 });
 
 /*
