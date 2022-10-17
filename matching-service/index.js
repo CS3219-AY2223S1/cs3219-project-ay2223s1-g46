@@ -34,6 +34,10 @@ io.on("connection", (socket) => {
         console.log("Message sent")
         io.emit('message', { name, message })
       })
+    socket.on('code', (code) => {
+        console.log("Code changed")
+        io.emit('code', { code })
+      })
     socket.on("abort_match", abortPendingMatch);
     socket.on("match", async (username, difficulty) => {
         for (const room of socket.rooms) {
