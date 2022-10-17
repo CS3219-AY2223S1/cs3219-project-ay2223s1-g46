@@ -1,4 +1,4 @@
-import { checkQuestionExists, createQuestion, getAllQuestions } from "./repository.js";
+import { checkQuestionExists, createQuestion, getAllQuestions, getGroupedQuestions } from "./repository.js";
 
 
 
@@ -30,5 +30,15 @@ export async function ormCheckQuestionExist(name){
   } catch (err) {
       console.log('ERROR: Could not check for question exists');
       return { err };
+  }
+}
+
+export async function ormGetGroupedQuestions(difficulty, topic) {
+  try {
+    const questions = await getGroupedQuestions(difficulty, topic);
+    return { questions };
+  } catch (err) {
+    console.log('ERROR: Could not get grouped questions');
+    return { err };
   }
 }

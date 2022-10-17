@@ -35,3 +35,11 @@ export async function checkQuestionExists(name) {
     return false
   }
 }
+
+export async function getGroupedQuestions(difficulty, topic) {
+  const questions = await QuestionModel.find({
+    "difficulty": difficulty,
+    "topic": topic
+  })
+  return questions
+}
