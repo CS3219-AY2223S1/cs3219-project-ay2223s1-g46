@@ -34,9 +34,9 @@ import TablePaginationActions from "@mui/material/TablePagination/TablePaginatio
 import CollapsibleTableRow from "../components/CollapsibleTableRow"
 import {
   STATUS_CODE_CONFLICT,
+  STATUS_CODE_CREATED,
   STATUS_CODE_INTERAL_ERROR,
   STATUS_CODE_INVALID,
-  STATUS_CODE_SUCCESS,
   STATUS_CODE_UNAUTHORIZED,
 } from "../constants"
 
@@ -58,6 +58,9 @@ const QuestionsPage = () => {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [snackbarTitle, setSnackbarTitle] = useState("")
   const [snackbarMsg, setSnackbarMsg] = useState("")
+  const [isSuccessSnackbarOpen, setIsSuccessSnackbarOpen] = useState(false)
+  const [successSnackbarTitle, setSuccessSnackbarTitle] = useState("")
+  const [successSnackbarMsg, setSuccessSnackbarMsg] = useState("")
 
   useEffect(() => {
     console.log("questions page effect")
@@ -115,6 +118,19 @@ const QuestionsPage = () => {
     setIsSnackbarOpen(false)
   }
 
+  const setSuccessSnackbar = (title, msg) => {
+    setIsSuccessSnackbarOpen(true)
+    setSuccessSnackbarTitle(title)
+    setSuccessSnackbarMsg(msg)
+  }
+
+  const handleCloseSuccessSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setIsSuccessSnackbarOpen(false)
+  }
+
   const handleCreate = async (e) => {
     e.preventDefault()
 
@@ -153,7 +169,7 @@ const QuestionsPage = () => {
         console.log("err.response :>> ", err.response)
       }
     })
-    if (res && res.status === STATUS_CODE_SUCCESS) {
+    if (res && res.status === STATUS_CODE_CREATED) {
       const updatedQuestions = [...questions, newQuestion]
       setQuestions(updatedQuestions)
       setOpenDialog(false)
@@ -161,6 +177,10 @@ const QuestionsPage = () => {
       setQuestionDetails("")
       setQuestionName("")
       setTopic("")
+      setSuccessSnackbar(
+        "SUCCESS",
+        "Your question has been successfully created."
+      )
     }
   }
 
@@ -346,6 +366,18 @@ const QuestionsPage = () => {
           <Alert severity="error" onClose={handleCloseSnackbar}>
             <AlertTitle>{snackbarTitle}</AlertTitle>
             {snackbarMsg}
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          open={isSuccessSnackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSuccessSnackbar}
+        >
+          <Alert severity="success" onClose={handleCloseSuccessSnackbar}>
+            <AlertTitle>{successSnackbarTitle}</AlertTitle>
+            {successSnackbarMsg}
           </Alert>
         </Snackbar>
       </Box>
