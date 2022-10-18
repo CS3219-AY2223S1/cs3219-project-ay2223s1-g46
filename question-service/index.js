@@ -5,6 +5,7 @@ import { authorization } from './utils/middleware.js'
 import {
   createQuestion,
   getAllQuestions,
+  getRandomGroupedQuestion,
 } from './controller/question-controller.js'
 
 const app = express()
@@ -18,6 +19,7 @@ const questionRouter = express.Router()
 
 // Controller will contain all the User-defined Routes
 questionRouter.get('/', authorization, getAllQuestions)
+questionRouter.get('/randomGrouped', authorization, getRandomGroupedQuestion)
 
 questionRouter.post('/', authorization, createQuestion)
 app.use('/question-service/question', questionRouter).all((_, res) => {
