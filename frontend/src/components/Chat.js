@@ -1,5 +1,5 @@
-import { TextField,Button,Grid,Card,Paper,ListItem,ListItemText, List } from "@mui/material"
-import React, { useEffect, useRef, useState } from "react"
+import { TextField,Button,Grid,Paper,ListItem,ListItemText, List } from "@mui/material"
+import React, { useEffect, useState } from "react"
 import SendIcon from '@mui/icons-material/Send';
 import io from "socket.io-client"
 import useUser from "../hooks/useUser"
@@ -10,8 +10,8 @@ export const Chat = () => {
         transports: ["websocket"],
     })
 
-    const { user, saveUser, removeUser } = useUser()
-	const [ state, setState ] = useState({ message: "", name: user })
+    const { user} = useUser()
+	const [ state, setState ] = useState({ message: "", name: user.username })
 	const [ chat, setChat ] = useState([])
     
 
@@ -22,7 +22,7 @@ export const Chat = () => {
 			})
 			return () => socket.disconnect()
 		},
-		[ chat ]
+		[chat]
 	)
 
 	const onTextChange = (e) => {

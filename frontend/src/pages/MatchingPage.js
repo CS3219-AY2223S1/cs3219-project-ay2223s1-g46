@@ -20,7 +20,8 @@ const socket = io("http://localhost:8001/", {
 // change to user after logging in
 useEffect(() => {
   console.log(difficulty);
-  socket.emit("match", user, difficulty) 
+  console.log(user.username);
+  socket.emit("match", user.username, difficulty) 
 }, []);
 
 socket.on("match_user", () => {
