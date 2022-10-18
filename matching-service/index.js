@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import { ormFlushPendingMatchById } from "./model/pendingMatch-orm.js"
 import { abortPendingMatchFactory } from './controller/abortPendingMatch.js';
 import { attemptMatchFactory } from './controller/match.js';
+import { getQuestion } from './model/question-orm.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -23,7 +24,7 @@ const httpServer = createServer(app)
 // https://socket.io/docs/v4/server-application-structure/
 // https://aleemisiaka.com/blog/socketio-app-structure/
 const io = new Server(httpServer, { /* options */ });
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
     console.log("Logging socket connection")
     socket.on("abort_match", abortPendingMatchFactory(socket));
     socket.on("match", attemptMatchFactory(io, socket));
@@ -39,6 +40,9 @@ io.on("connection", (socket) => {
     console.log("Code changed")
     io.emit('code', { code })
     })
+    //Temp debug question retrival
+    const question = await getQuestion("Array", "Easy")
+    io.emit('question', question)
 });
 
 /*
@@ -50,5 +54,5 @@ io.on("connection", (socket) => {
 //TODO: Add repeatingTimer to check database for dangling pairs of pendingMatches with matching difficulty
 */
 
-httpServer.listen(8001);
+httpServer.listen(8002); //8001 clashed with matching service //TODO: Follow up properly
 console.log("Startup complete")
