@@ -34,6 +34,11 @@ io.on("connection", (socket) => {
         console.log("Message sent")
         io.emit('message', { name, message })
       })
+    //Temp debug socket listener for code editor
+    socket.on('code', (code) => {
+    console.log("Code changed")
+    io.emit('code', { code })
+    })
 });
 
 /*
