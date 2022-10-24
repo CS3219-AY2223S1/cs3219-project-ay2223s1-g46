@@ -12,7 +12,6 @@ export async function getToken() {
         .post(URL_LOGIN_SVC, { "username" : MATCHING_USER, "password" : MATCHING_PASSWORD })
         .catch((err) => {/*console.log("err.response :>> ", err.response)*/})
     if (res && res.status === STATUS_CODE_SUCCESS) {
-        //TODO: See if this cookie is already set in some variable somewhere or if I need to explictly include it later
         const cookie = res.data.token
         return cookie
     }

@@ -10,7 +10,7 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
         
     const otherSocket = io.sockets.sockets.get(avaliableMatch.socket_id); // TODO: Detect if socket has already disconnected
     const room_id = uuidv4();
-    const questionPromise = getQuestion(topic, difficulty); //TODO: Add difficulty selection
+    const questionPromise = getQuestion(topic, difficulty);
     
     function processHalfSocket(firstSocket, firstUsername, secondSocket, secondUsername) {
         firstSocket.join(room_id); 
