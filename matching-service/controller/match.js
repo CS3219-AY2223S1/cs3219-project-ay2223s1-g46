@@ -1,16 +1,16 @@
-import { ormCreatePendingMatch, ormClaimFirstMatchByDifficulty, ormFlushPendingMatchById } from "./../model/pendingMatch-orm.js";
+import { ormCreatePendingMatch, ormClaimFirstMatch, ormFlushPendingMatchById } from "./../model/pendingMatch-orm.js";
 import { v4 as uuidv4 } from 'uuid';
 import { addLeaveRoomCallback } from "./leaveRoomController.js";
 import { abortPendingMatchFactory } from './abortPendingMatch.js';
 import { getQuestion } from '../model/question-orm.js';
 
 
-async function processMatchFound (io, socket, username, difficulty, avaliableMatch) {
+async function processMatchFound(io, socket, username, difficulty, topic, avaliableMatch) {
     clearTimeout(avaliableMatch.timeout_id);
         
     const otherSocket = io.sockets.sockets.get(avaliableMatch.socket_id); // TODO: Detect if socket has already disconnected
     const room_id = uuidv4();
-    const questionPromise = getQuestion("Array", difficulty); //TODO: Add difficulty selection
+    const questionPromise = getQuestion(topic, difficulty); //TODO: Add difficulty selection
     
     function processHalfSocket(firstSocket, firstUsername, secondSocket, secondUsername) {
         firstSocket.join(room_id); 
@@ -38,7 +38,7 @@ async function processMatchFound (io, socket, username, difficulty, avaliableMat
     io.emit('question', question)
 }
 
-async function createPendingMatchWithTimeout(io, socket, username, difficulty) {
+async function createPendingMatchWithTimeout(io, socket, username, difficulty, topic) {
     try {
         //Note: timeout_id doesn't work across worker threads
         const timeout_id = +setTimeout(async () => {//Note: we have the plus to force conversion to number
@@ -46,7 +46,7 @@ async function createPendingMatchWithTimeout(io, socket, username, difficulty) {
                 socket.emit("matchFail", "Timeout, try again");
                 console.log("Timeout on socket " + socket.id)
             }, 1000 * 30);
-        await ormCreatePendingMatch(username, socket.id, difficulty, timeout_id)
+        await ormCreatePendingMatch(username, socket.id, difficulty, topic, timeout_id)
         console.log("Match in progress")
         socket.emit("match_result", "Match in progress");
     } catch (err) { //Catch block doesn't actually work. //TODO: Test this by submitting 2 names at the same time
@@ -56,7 +56,7 @@ async function createPendingMatchWithTimeout(io, socket, username, difficulty) {
 }
 
 export function attemptMatchFactory (io, socket) {
-    return async (username, difficulty) => {
+    return async (username, difficulty, topic) => {
         for (const room of socket.rooms) {
             if (room !== socket.id) {
                 console.log("Match request receive while already in room from socket " + socket.id)
@@ -66,13 +66,13 @@ export function attemptMatchFactory (io, socket) {
         const abortPendingMatch = abortPendingMatchFactory(socket);
         await abortPendingMatch();
         
-        console.log("Creating for: " + username + "; Difficulty: " + difficulty)
+        console.log(`Creating for: ${username}; Difficulty: ${difficulty}, Topic: ${topic}`)
     
-        var avaliableMatch = await ormClaimFirstMatchByDifficulty(difficulty)
+        var avaliableMatch = await ormClaimFirstMatch(difficulty, topic)
         if (avaliableMatch) { 
-            await processMatchFound(io, socket, username, difficulty, avaliableMatch);
+            await processMatchFound(io, socket, username, difficulty, topic, avaliableMatch);
         } else {//Match not found immediately
-            await createPendingMatchWithTimeout(io, socket, username, difficulty);
+            await createPendingMatchWithTimeout(io, socket, username, difficulty, topic);
         }
     }
 };
