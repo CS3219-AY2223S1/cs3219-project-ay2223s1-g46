@@ -5,7 +5,6 @@ import { Server } from "socket.io";
 import { ormFlushPendingMatchById } from "./model/pendingMatch-orm.js"
 import { abortPendingMatchFactory } from './controller/abortPendingMatch.js';
 import { attemptMatchFactory } from './controller/match.js';
-import { getQuestion } from './model/question-orm.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -30,19 +29,11 @@ io.on("connection", async (socket) => {
     socket.on("match", attemptMatchFactory(io, socket));
     socket.on("disconnect", async (_) => {await ormFlushPendingMatchById(socket.id);});
     
-    //Temp debug socket listener
-    socket.on('message', ({ name, message }) => {
-        console.log("Message sent")
-        io.emit('message', { name, message })
-      })
     //Temp debug socket listener for code editor
     socket.on('code', (code) => {
     console.log("Code changed")
     io.emit('code', { code })
     })
-    //Temp debug question retrival
-    const question = await getQuestion("Array", "Easy")
-    io.emit('question', question)
 });
 
 /*

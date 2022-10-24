@@ -2,30 +2,40 @@ import { ormCreatePendingMatch, ormClaimFirstMatchByDifficulty, ormFlushPendingM
 import { v4 as uuidv4 } from 'uuid';
 import { addLeaveRoomCallback } from "./leaveRoomController.js";
 import { abortPendingMatchFactory } from './abortPendingMatch.js';
+import { getQuestion } from '../model/question-orm.js';
 
-function processMatchFound (io, socket, username, difficulty, avaliableMatch) {
+
+async function processMatchFound (io, socket, username, difficulty, avaliableMatch) {
     clearTimeout(avaliableMatch.timeout_id);
         
     const otherSocket = io.sockets.sockets.get(avaliableMatch.socket_id); // TODO: Detect if socket has already disconnected
     const room_id = uuidv4();
+    const questionPromise = getQuestion("Array", difficulty); //TODO: Add difficulty selection
+    
+    function processHalfSocket(firstSocket, firstUsername, secondSocket, secondUsername) {
+        firstSocket.join(room_id); 
+        addLeaveRoomCallback(io, firstSocket, firstUsername)
+        secondSocket.to(room_id).emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
+        
+        //Chat service
+        socket.on('message', ({ name, message }) => {
+            console.log("Message sent")
+            io.to(room_id).emit('message', { name, message })
+        })
+
+        //TODO: Colab service
+
+        firstSocket.emit("match_user", secondUsername);
+    }
     
     //Handle other socket
-    otherSocket.join(room_id); 
-    addLeaveRoomCallback(io, otherSocket, avaliableMatch.username)
-    socket.to(room_id).emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
-    otherSocket.on("message", 
-        (msg) => otherSocket.to(room_id).emit("message", msg)
-    )
-    socket.to(room_id).emit("match_user", username);
+    processHalfSocket(otherSocket, avaliableMatch.username, socket, username)
 
     //Handle this socket
-    socket.join(room_id);
-    addLeaveRoomCallback(io, socket, username)
-    socket.emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
-    socket.on("message", 
-        (msg) => socket.to(room_id).emit("message", msg)
-    )
-    socket.emit("match_user", avaliableMatch.username);
+    processHalfSocket(socket, username, otherSocket, avaliableMatch.username)
+
+    const question = await questionPromise;
+    io.emit('question', question)
 }
 
 async function createPendingMatchWithTimeout(io, socket, username, difficulty) {
@@ -60,9 +70,9 @@ export function attemptMatchFactory (io, socket) {
     
         var avaliableMatch = await ormClaimFirstMatchByDifficulty(difficulty)
         if (avaliableMatch) { 
-            processMatchFound(io, socket, username, difficulty, avaliableMatch);
+            await processMatchFound(io, socket, username, difficulty, avaliableMatch);
         } else {//Match not found immediately
-            createPendingMatchWithTimeout(io, socket, username, difficulty);
+            await createPendingMatchWithTimeout(io, socket, username, difficulty);
         }
     }
 };
