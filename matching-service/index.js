@@ -23,17 +23,12 @@ const httpServer = createServer(app)
 // https://socket.io/docs/v4/server-application-structure/
 // https://aleemisiaka.com/blog/socketio-app-structure/
 const io = new Server(httpServer, { /* options */ });
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
     console.log("Logging socket connection")
     socket.on("abort_match", abortPendingMatchFactory(socket));
     socket.on("match", attemptMatchFactory(io, socket));
     socket.on("disconnect", async (_) => {await ormFlushPendingMatchById(socket.id);});
     
-    //Temp debug socket listener
-    socket.on('message', ({ name, message }) => {
-        console.log("Message sent")
-        io.emit('message', { name, message })
-      })
     //Temp debug socket listener for code editor
     socket.on('code', (code) => {
     console.log("Code changed")
@@ -50,5 +45,5 @@ io.on("connection", (socket) => {
 //TODO: Add repeatingTimer to check database for dangling pairs of pendingMatches with matching difficulty
 */
 
-httpServer.listen(8001);
+httpServer.listen(8002); //8001 clashed with matching service //TODO: Follow up properly
 console.log("Startup complete")
