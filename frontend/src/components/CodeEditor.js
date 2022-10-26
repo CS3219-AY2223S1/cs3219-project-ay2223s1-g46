@@ -17,7 +17,7 @@ export const CodeEditor = () => {
       mode: 'javascript',
     })
 
-    const socket = io('http://localhost:8001/', {
+    const socket = io('http://localhost:8002/', {
       transports: ['websocket'],
     })
 

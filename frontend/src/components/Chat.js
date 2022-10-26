@@ -6,7 +6,7 @@ import useUser from "../hooks/useUser"
 
 export const Chat = () => {
     
-    const socket = io("http://localhost:8001/", {
+    const socket = io("http://localhost:8002/", {
         transports: ["websocket"],
     })
 
@@ -31,9 +31,11 @@ export const Chat = () => {
 
 	const onMessageSubmit = (e) => {
 		const { name, message } = state
-		socket.emit("message", { name, message })
-		e.preventDefault()
-		setState({ message: "", name })
+		if (message !== "") {
+			socket.emit("message", { name, message })
+			e.preventDefault()
+			setState({ message: "", name })
+		}
 	}
 
 	const renderChat = () => {
@@ -66,9 +68,11 @@ export const Chat = () => {
 						onKeyPress={(e) => {
 							if (e.key === 'Enter') {
 								const { name, message } = state
-								socket.emit("message", { name, message })
-								e.preventDefault()
-								setState({ message: "", name })							
+								if (message !== "") {
+									socket.emit("message", { name, message })
+									e.preventDefault()
+									setState({ message: "", name })
+								}						
 							}
 						  }}
 					/>	

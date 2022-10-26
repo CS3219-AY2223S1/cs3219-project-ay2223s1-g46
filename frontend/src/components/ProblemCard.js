@@ -13,7 +13,7 @@ export default function ProblemCard({ difficulty, color, image, text }) {
   let navigate = useNavigate()
 
   const matchDifficulty = () => {
-    navigate("../topic/" + difficulty.toLowerCase())
+    navigate("../topic/" + difficulty)
   }
 
   return (

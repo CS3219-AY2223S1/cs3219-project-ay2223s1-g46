@@ -13,7 +13,7 @@ export default function TopicCard({ topic, color, image, text, difficulty }) {
   let navigate = useNavigate()
 
   const matchTopic = () => {
-    navigate("../matching/" + difficulty.toLowerCase() + "/" + topic.toLowerCase())
+    navigate("../matching/" + difficulty + "/" + topic)
   }
 
   return (

@@ -14,7 +14,7 @@ const { user, saveUser, removeUser } = useUser()
 const {difficulty, topic} = useParams()
 
 
-const socket = io("http://localhost:8001/", {
+const socket = io("http://localhost:8002/", {
   transports: ["websocket"],
 })
 
