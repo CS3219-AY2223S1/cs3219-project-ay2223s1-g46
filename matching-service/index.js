@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from "socket.io";
+import { YSocketIO } from 'y-socket.io/dist/server'
 import { ormFlushPendingMatchById } from "./model/pendingMatch-orm.js"
 import { abortPendingMatchFactory } from './controller/abortPendingMatch.js';
 import { attemptMatchFactory } from './controller/match.js';
@@ -35,6 +36,10 @@ io.on("connection", async (socket) => {
     io.emit('code', { code })
     })
 });
+const ysocketio = new YSocketIO(io)
+ysocketio.initialize()
+//TODO: Add custom middleware for authentication
+//TODO: Check for namespace logic collision
 
 /*
 //TODO: Get back to this in a future refactoring, to prevent race condition.
