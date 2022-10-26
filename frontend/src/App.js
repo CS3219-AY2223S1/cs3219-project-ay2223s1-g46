@@ -16,6 +16,7 @@ import ProfilePage from "./pages/ProfilePage"
 import useUser from "./hooks/useUser"
 import ChangePasswordPage from "./pages/ChangePasswordPage"
 import QuestionsPage from "./pages/QuestionsPage"
+import TopicPage from "./pages/TopicPage"
 
 function App() {
   const { user, saveUser, removeUser } = useUser()
@@ -29,9 +30,10 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/problems" element={<ProblemPage />} />
+          <Route path="/topic/:difficulty" element={<TopicPage />} />
           <Route path="/signup" element={<ContributePage />} />
           <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
-          <Route path="/matching/:difficulty" element={<MatchingPage />} />
+          <Route path="/matching/:difficulty/:topic" element={<MatchingPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route
             path="/questions"

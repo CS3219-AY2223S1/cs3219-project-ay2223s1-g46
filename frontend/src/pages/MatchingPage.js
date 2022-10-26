@@ -11,7 +11,8 @@ const MatchingPage = () => {
 let navigate = useNavigate()
 const [isTimeout, setTimeout] = useState(false)
 const { user, saveUser, removeUser } = useUser()
-const {difficulty} = useParams()
+const {difficulty, topic} = useParams()
+
 
 const socket = io("http://localhost:8001/", {
   transports: ["websocket"],
@@ -20,8 +21,9 @@ const socket = io("http://localhost:8001/", {
 // change to user after logging in
 useEffect(() => {
   console.log(difficulty);
+  console.log(topic);
   console.log(user.username);
-  socket.emit("match", user.username, difficulty) 
+  socket.emit("match", user.username, difficulty, topic) 
 }, []);
 
 socket.on("match_user", () => {
@@ -50,7 +52,7 @@ const rematch = () => {
         <Box display={"flex"} flexDirection={"column"}  justifyContent="center" alignItems="center"marginTop={2}>
           <Button
             sx={{ width: 200}}
-            className="button"
+            className="button-matching"
             variant={"contained"}
             onClick={rematch}
           >
