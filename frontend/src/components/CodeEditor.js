@@ -6,7 +6,6 @@ import 'codemirror/keymap/sublime'
 import CodeMirror from 'codemirror'
 import io from 'socket.io-client'
 
-
 export const CodeEditor = () => {
   
   useEffect(() => {
@@ -17,7 +16,7 @@ export const CodeEditor = () => {
       mode: 'javascript',
     })
 
-    const socket = io('http://localhost:8001/', {
+    const socket = io('http://localhost:8002/', {
       transports: ['websocket'],
     })
 

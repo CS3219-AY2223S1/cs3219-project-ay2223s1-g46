@@ -9,36 +9,31 @@ import CodeIcon from "@mui/icons-material/Code"
 import { useNavigate } from "react-router-dom"
 import "./css/ProblemCard.css"
 
-export default function ProblemCard({ difficulty, color, image, text }) {
+export default function TopicCard({ topic, color, image, text, difficulty }) {
   let navigate = useNavigate()
 
-  const matchDifficulty = () => {
-    navigate("../topic/" + difficulty)
+  const matchTopic = () => {
+    navigate("../matching/" + difficulty + "/" + topic)
   }
 
   return (
     <Card
       variant="outlined"
-      sx={{ height: 450, width: 400 }}
+      sx={{ height: 400, width: 400 }}
       style={{ backgroundColor: `${color}` }}
     >
       <CardContent className="title">
-        <Typography align="center" sx={{ fontSize: 20 }} color="black">
-          {difficulty}
+        <Typography align="center" sx={{ fontSize: 18 }} color="black">
+          {topic}
         </Typography>
       </CardContent>
       <CardMedia className="image" component="img" image={image} />
-      <CardContent sx={{ height: 60, width: 380 }}>
-        <Typography align="center" sx={{ fontSize: 20 }} color="black">
-          {text}
-        </Typography>
-      </CardContent>
       <CardActions style={{ justifyContent: "center" }}>
         <Button
           variant="contained"
           endIcon={<CodeIcon />}
           size="medium"
-          onClick={matchDifficulty}
+          onClick={matchTopic}
         >
           Match
         </Button>
