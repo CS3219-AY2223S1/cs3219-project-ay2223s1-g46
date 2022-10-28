@@ -23,7 +23,7 @@ let QuestionModelSchema = new Schema({
 QuestionModelSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       // creates string id from object _id
-      //   returnedObject.id = returnedObject._id.toString()
+      returnedObject.id = returnedObject._id.toString()
       delete returnedObject._id
       delete returnedObject.__v
     }
