@@ -15,10 +15,20 @@ export async function createHistory(req, res) {
                 .status(400)
                 .json({ message: 'Could not create a new history!' })
             } else {
-                console.log(`Created new history successfully!`)
+                
+                // create history for opposite user too
+                let secondResp = await _createHistory(partnerUsername, username, question, chatHistory, codeHistory, finishDate)
+
+                if (secondResp.err) {
+                    return res
+                    .status(400)
+                    .json({ message: 'Could not create a new history!' })
+                }
+
+                console.log(`Created both users' history successfully!`)
                 return res
                 .status(201)
-                .json({ message: `Created new history for ${username} successfully!` })
+                .json({ message: `Created new history for ${username} and ${partnerUsername} successfully!` })
             }
         } else {
             return res
