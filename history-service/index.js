@@ -1,12 +1,12 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import { authorization } from './utils/middleware.js'
+import { authorization, adminAuthorization } from './utils/middleware.js'
+
 import {
-  createQuestion,
-  getAllQuestions,
-  getRandomGroupedQuestion,
-} from './controller/question-controller.js'
+  createHistory,
+  getUserHistory
+} from './controller/history-controller.js'
 
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -15,16 +15,15 @@ app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
 app.use(cookieParser())
 
-const questionRouter = express.Router()
+const historyRouter = express.Router()
 
 // Controller will contain all the User-defined Routes
-questionRouter.get('/', authorization, getAllQuestions)
-questionRouter.get('/randomGrouped', authorization, getRandomGroupedQuestion)
+historyRouter.get('/', authorization, getUserHistory)
+historyRouter.post('/', adminAuthorization, createHistory)
 
-questionRouter.post('/', authorization, createQuestion)
-app.use('/question-service/question', questionRouter).all((_, res) => {
+app.use('/history-service/history', historyRouter).all((_, res) => {
   res.setHeader('content-type', 'application/json')
   res.setHeader('Access-Control-Allow-Origin', '*')
 })
 
-app.listen(8001, () => console.log('question-service listening on port 8001'))
+app.listen(8003, () => console.log('history-service listening on port 8003'))

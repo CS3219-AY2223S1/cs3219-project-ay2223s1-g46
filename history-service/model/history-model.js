@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import QuestionModel from './question-model.js';
 var Schema = mongoose.Schema
 let HistoryModelSchema = new Schema({
     username: {
@@ -11,7 +12,7 @@ let HistoryModelSchema = new Schema({
     },
     question: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'QuestionModel'
+        ref: QuestionModel
     },
     chatHistory: {
         type: String,
@@ -33,9 +34,9 @@ HistoryModelSchema.set('toJSON', {
     transform: (document, returnedObject) => {
     // creates string id from object _id
     returnedObject.id = returnedObject._id.toString()
-      delete returnedObject._id
-      delete returnedObject.__v
-    }
-  })
+    delete returnedObject._id
+    delete returnedObject.__v
+}
+})
 
 export default mongoose.model('HistoryModel', HistoryModelSchema)
