@@ -1,8 +1,9 @@
 import { getAndDeleteMatchHistory } from '../model/matchHistory-orm.js'
+import { postHistory } from '../model/history-orm.js'
 
 async function flushHistory(room_id) {
-    const history = getAndDeleteMatchHistory(room_id)
-    const  currentTimeInSGT = new Date().toLocaleString('en-US', {
+    const history = await getAndDeleteMatchHistory(room_id)
+    const currentTimeInSGT = new Date().toLocaleString('en-US', {
         timeZone: 'Asia/Singapore',
         hour12: false
     })
@@ -14,7 +15,7 @@ async function flushHistory(room_id) {
 
     // date as YYYY-MM-DD format
     history.finishDate = year + "-" + month + "-" + date;
-    //TODO: Write to history microservice
+    await postHistory(history)
 }
 
 export function addLeaveRoomCallback (io, socket, username) {

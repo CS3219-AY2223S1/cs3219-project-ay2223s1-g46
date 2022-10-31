@@ -22,7 +22,7 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
         firstSocket.on('message', async ({ name, message }) => {
             console.log("Message sent")
             io.to(room_id).emit('message', { name, message })
-            const message_log = name + " : " + message //TODO: Check if this is fine, with team members
+            const message_log = JSON.stringify([name, message]);//TODO: Check if this is fine, with team members
             await appendChatHistory(room_id, message_log)
         })
     
@@ -35,9 +35,9 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
 
         firstSocket.emit("match_user", secondUsername);
     }
-    const question = await questionPromise; //TODO: Also return id
+    const question = await questionPromise;
 
-    startHistory(room_id, username, avaliableMatch.username, question)
+    startHistory(room_id, username, avaliableMatch.username, question.id)
     
     //Handle other socket
     processHalfSocket(otherSocket, avaliableMatch.username, socket, username)
