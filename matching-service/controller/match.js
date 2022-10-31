@@ -29,7 +29,7 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
         //Colab service
         firstSocket.on('code', async (code) => {
             console.log("Code changed")
-            secondSocket.emit('code', { code })
+            io.to(room_id).emit('code', { code })
             await writeCodeHistory(room_id, code)
         })
 
