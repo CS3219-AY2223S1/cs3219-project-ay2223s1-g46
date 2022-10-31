@@ -22,6 +22,11 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
             console.log("Message sent")
             io.to(room_id).emit('message', { name, message })
         })
+        //Colab service
+        firstSocket.on('code', async (code) => {
+            console.log("Code changed")
+            secondSocket.emit('code', { code })
+        })
 
         //TODO: Colab service
 
