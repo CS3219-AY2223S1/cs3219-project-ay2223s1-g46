@@ -1,15 +1,12 @@
 import { TextField,Button,Grid,Paper,ListItem,ListItemText, List } from "@mui/material"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext} from "react"
 import SendIcon from '@mui/icons-material/Send';
 import io from "socket.io-client"
 import useUser from "../hooks/useUser"
+import { SocketContext } from "../socket";
 
 export const Chat = () => {
-    
-    const socket = io("http://localhost:8002/", {
-        transports: ["websocket"],
-    })
-
+    let socket = useContext(SocketContext)
     const { user} = useUser()
 	const [ state, setState ] = useState({ message: "", name: user.username })
 	const [ chat, setChat ] = useState([])
@@ -20,7 +17,6 @@ export const Chat = () => {
 			socket.on("message", ({ name, message }) => {
 				setChat([ ...chat, { name, message } ])
 			})
-			return () => socket.disconnect()
 		},
 		[chat]
 	)
@@ -31,7 +27,9 @@ export const Chat = () => {
 
 	const onMessageSubmit = (e) => {
 		const { name, message } = state
+		console.log("socket.connected")
 		if (message !== "") {
+			console.log(socket.connected)
 			socket.emit("message", { name, message })
 			e.preventDefault()
 			setState({ message: "", name })

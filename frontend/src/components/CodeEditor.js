@@ -1,23 +1,19 @@
-import React, { useEffect} from 'react'
+import React, { useContext, useEffect } from 'react'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material-ocean.css'
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/keymap/sublime'
 import CodeMirror from 'codemirror'
-import io from 'socket.io-client'
+import { SocketContext } from "../socket"
 
 export const CodeEditor = () => {
-  
+  const socket = useContext(SocketContext)
   useEffect(() => {
     const editor = CodeMirror.fromTextArea(document.getElementById('ds'), {
       lineNumbers: true,
       keyMap: 'sublime',
       theme: 'material-ocean',
       mode: 'javascript',
-    })
-
-    const socket = io('http://localhost:8002/', {
-      transports: ['websocket'],
     })
 
     socket.on('code', (code) => {

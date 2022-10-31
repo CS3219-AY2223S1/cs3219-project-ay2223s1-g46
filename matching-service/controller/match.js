@@ -18,7 +18,7 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
         secondSocket.to(room_id).emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
         
         //Chat service
-        socket.on('message', ({ name, message }) => {
+        firstSocket.on('message', ({ name, message }) => {
             console.log("Message sent")
             io.to(room_id).emit('message', { name, message })
         })
