@@ -1,3 +1,23 @@
+import { getAndDeleteMatchHistory } from '../model/matchHistory-orm.js'
+import { postHistory } from '../model/history-orm.js'
+
+async function flushHistory(room_id) {
+    const history = await getAndDeleteMatchHistory(room_id)
+    const currentTimeInSGT = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Singapore',
+        hour12: false
+    })
+    const date_nz = new Date(currentTimeInSGT);
+
+    const year = date_nz.getFullYear();
+    const month = ("0" + (date_nz.getMonth() + 1)).slice(-2);
+    const date = ("0" + date_nz.getDate()).slice(-2);
+
+    // date as YYYY-MM-DD format
+    history.finishDate = year + "-" + month + "-" + date;
+    await postHistory(history)
+}
+
 export function addLeaveRoomCallback (io, socket, username) {
     const leaveRoomCallback = () => {
 
@@ -20,6 +40,8 @@ export function addLeaveRoomCallback (io, socket, username) {
 
                     lonely_socket.leave(room);
                     lonely_socket.emit("room_info", "Room has been torn down")
+                    
+                    flushHistory(room)
                 }
             }
         }

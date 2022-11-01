@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { addLeaveRoomCallback } from "./leaveRoomController.js";
 import { abortPendingMatchFactory } from './abortPendingMatch.js';
 import { getQuestion } from '../model/question-orm.js';
+import { appendChatHistory, writeCodeHistory, startHistory } from '../model/matchHistory-orm.js'
 
 
 async function processMatchFound(io, socket, username, difficulty, topic, avaliableMatch) {
@@ -18,15 +19,25 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
         secondSocket.to(room_id).emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
         
         //Chat service
-        firstSocket.on('message', ({ name, message }) => {
+        firstSocket.on('message', async ({ name, message }) => {
             console.log("Message sent")
             io.to(room_id).emit('message', { name, message })
+            const message_log = JSON.stringify([name, message]);//TODO: Check if this is fine, with team members
+            await appendChatHistory(room_id, message_log)
         })
-
-        //TODO: Colab service
+    
+        //Colab service
+        firstSocket.on('code', async (code) => {
+            console.log("Code changed")
+            io.to(room_id).emit('code', { code })
+            await writeCodeHistory(room_id, code)
+        })
 
         firstSocket.emit("match_user", secondUsername);
     }
+    const question = await questionPromise;
+
+    startHistory(room_id, username, avaliableMatch.username, question.id)
     
     //Handle other socket
     processHalfSocket(otherSocket, avaliableMatch.username, socket, username)
@@ -34,7 +45,6 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
     //Handle this socket
     processHalfSocket(socket, username, otherSocket, avaliableMatch.username)
 
-    const question = await questionPromise;
     io.emit('question', question)
 }
 
