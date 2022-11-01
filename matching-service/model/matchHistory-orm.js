@@ -18,7 +18,7 @@ function getQuestionKey(room_id) {
 
 export async function getAndDeleteMatchHistory(room_id) {
     const chat_key = getChatHistoryKey(room_id)
-    const chat_history = (await LRANGE(chat_key, 0, -1)) ?? ""
+    const chat_history = (await LRANGE(chat_key, 0, -1)) ?? []
     await DEL(chat_key)
     
     const code_key = getCodeHistoryKey(room_id)
