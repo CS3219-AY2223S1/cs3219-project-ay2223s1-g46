@@ -48,7 +48,7 @@ export async function getAndDeleteMatchHistory(room_id) {
         "partnerUsername" : userB,
         "question" : question_history,
         "chatHistory" : JSON.stringify(chat_history), 
-        "codeHistory" : code_history
+        "codeHistory" : JSON.stringify(code_history)
     }
 }
 
