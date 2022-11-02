@@ -5,14 +5,18 @@ import Typography from "@mui/material/Typography"
 import { SocketContext } from "../socket"
 
 export default function QuestionCard() {
+  const socket = useContext(SocketContext)
   const [ topic, setTopic ] = useState("")
   const [ difficulty, setDifficulty ] = useState("")
   const [ text, setText ] = useState("")
   const [ name, setName ] = useState("")  
-  const socket = useContext(SocketContext)
   
   useEffect(() => {
+    socket.emit("sendQuestion")
+    
     socket.on('question', (question) => {
+      console.log("a")
+      console.log(question)
       setTopic(question.topic)
       setName(question.name)
       setDifficulty(question.difficulty)

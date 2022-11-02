@@ -6,20 +6,25 @@ import useUser from "../hooks/useUser"
 import { SocketContext } from "../socket";
 
 export const Chat = () => {
-    let socket = useContext(SocketContext)
+    const socket = useContext(SocketContext)
     const { user} = useUser()
 	const [ state, setState ] = useState({ message: "", name: user.username })
 	const [ chat, setChat ] = useState([])
     
 
-	useEffect(
-		() => {
-			socket.on("message", ({ name, message }) => {
-				setChat([ ...chat, { name, message } ])
-			})
-		},
-		[chat]
-	)
+	useEffect(() => {
+		console.log(socket?.id)
+		socket.on("message", ({ name, message }) => {
+			setChat([ ...chat, { name, message } ])
+		})
+
+		socket.on('question', (question) => {
+			console.log("a")
+		  })
+		return () => {
+			socket.off('message')
+		  }
+	},[chat])
 
 	const onTextChange = (e) => {
 		setState({ ...state, [e.target.name]: e.target.value })

@@ -34,7 +34,14 @@ useEffect(() => {
   socket.on("matchFail", () => {
     setTimeout(true)
   })
+  return () => {
+    socket.off('match_user')
+    socket.off('matchFail')
+  }
 
+  socket.on('question', (question) => {
+    console.log("a")
+    })
 }, []);
 
 const rematch = () => {

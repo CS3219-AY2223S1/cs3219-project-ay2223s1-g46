@@ -12,8 +12,9 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
     const otherSocket = io.sockets.sockets.get(avaliableMatch.socket_id); // TODO: Detect if socket has already disconnected
     const room_id = uuidv4();
     const questionPromise = getQuestion(topic, difficulty);
+    const question = await questionPromise;
     
-    function processHalfSocket(firstSocket, firstUsername, secondSocket, secondUsername) {
+    function processHalfSocket(firstSocket, firstUsername, secondSocket, secondUsername, question) {
         firstSocket.join(room_id); 
         addLeaveRoomCallback(io, firstSocket, firstUsername)
         secondSocket.to(room_id).emit("matchSuccess","Found"); //TODO: Require ack, change eventName to match_result
@@ -32,20 +33,23 @@ async function processMatchFound(io, socket, username, difficulty, topic, avalia
             io.to(room_id).emit('code', { code })
             await writeCodeHistory(room_id, code)
         })
+        
+        //QuestionService
+        firstSocket.on('sendQuestion', async () => {
+            console.log("Question sent")
+            io.to(room_id).emit('question', question)
+        })
 
         firstSocket.emit("match_user", secondUsername);
     }
-    const question = await questionPromise;
 
     startHistory(room_id, username, avaliableMatch.username, question.id)
-    
+    console.log("Question:" + question)
     //Handle other socket
-    processHalfSocket(otherSocket, avaliableMatch.username, socket, username)
+    processHalfSocket(otherSocket, avaliableMatch.username, socket, username, question)
 
     //Handle this socket
-    processHalfSocket(socket, username, otherSocket, avaliableMatch.username)
-
-    io.emit('question', question)
+    processHalfSocket(socket, username, otherSocket, avaliableMatch.username, question)
 }
 
 async function createPendingMatchWithTimeout(io, socket, username, difficulty, topic) {
