@@ -1,4 +1,4 @@
-import {React,useContext} from "react"
+import {React,useContext,useEffect} from "react"
 import CardMedia from "@mui/material/CardMedia"
 import Card from "@mui/material/Card"
 import CardActions from "@mui/material/CardActions"
@@ -17,7 +17,12 @@ export default function TopicCard({ topic, color, image, difficulty }) {
     socket.on("connect", () => {
       console.log("Room Id: ", socket?.id);
     });
+
     navigate("../matching/" + difficulty + "/" + topic)
+    
+    return() => {
+      socket.off("connect")
+    }
   }
 
   return (

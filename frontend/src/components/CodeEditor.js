@@ -15,6 +15,8 @@ export const CodeEditor = () => {
       theme: 'material-ocean',
       mode: 'javascript',
     })
+    console.log((socket?.id))
+
 
     socket.on('code', (code) => {
       console.log(code.code)
@@ -35,7 +37,14 @@ export const CodeEditor = () => {
       console.log(instance.cursorCoords())
     })
 
+    socket.on('question', (question) => {
+			console.log("a")
+		  })
+
     return () => {
+      socket.off('code')
+      socket.off('change')
+      socket.off('cursorActivity')
     }
   }, [])
 
