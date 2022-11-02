@@ -18,11 +18,11 @@ function getQuestionKey(room_id) {
 
 export async function getAndDeleteMatchHistory(room_id) {
     const chat_key = getChatHistoryKey(room_id)
-    const chat_history = await LRANGE(chat_key, 0, -1)
+    const chat_history = (await LRANGE(chat_key, 0, -1)) ?? []
     await DEL(chat_key)
     
     const code_key = getCodeHistoryKey(room_id)
-    const code_history = await GET(code_key)
+    const code_history = (await GET(code_key)) ?? ""
     await DEL(code_key)
 
     const question_key = getQuestionKey(room_id)
@@ -32,6 +32,16 @@ export async function getAndDeleteMatchHistory(room_id) {
     const users_key = getUsersKey(room_id)
     const [userA, userB] = await LRANGE(users_key, 0, -1)
     await DEL(users_key)
+    
+    if (!question_history) {
+        throw new Error("Question history is missing")
+    }
+    if (!userA) {
+        throw new Error("Both users are missing")
+    }
+    if (!userB) {
+        throw new Error(`Only user '${userA}' is present`)
+    }
 
     return {
         "username" : userA,
