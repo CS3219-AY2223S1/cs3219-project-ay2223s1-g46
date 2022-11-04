@@ -1,13 +1,13 @@
-import React, { useEffect} from 'react'
+import React, { useContext, useEffect } from 'react'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material-ocean.css'
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/keymap/sublime'
 import CodeMirror from 'codemirror'
-import io from 'socket.io-client'
+import { SocketContext } from "../socket"
 
 export const CodeEditor = () => {
-  
+  const socket = useContext(SocketContext)
   useEffect(() => {
     const editor = CodeMirror.fromTextArea(document.getElementById('ds'), {
       lineNumbers: true,
@@ -15,10 +15,8 @@ export const CodeEditor = () => {
       theme: 'material-ocean',
       mode: 'javascript',
     })
+    console.log((socket?.id))
 
-    const socket = io('http://localhost:8002/', {
-      transports: ['websocket'],
-    })
 
     socket.on('code', (code) => {
       console.log(code.code)
@@ -39,7 +37,14 @@ export const CodeEditor = () => {
       console.log(instance.cursorCoords())
     })
 
+    socket.on('question', (question) => {
+			console.log("a")
+		  })
+
     return () => {
+      socket.off('code')
+      socket.off('change')
+      socket.off('cursorActivity')
     }
   }, [])
 

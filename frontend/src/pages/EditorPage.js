@@ -1,27 +1,19 @@
-import { React, useEffect } from "react"
+import { React, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button, Box } from "@mui/material"
 import { CodeEditor } from "../components/CodeEditor"
 import { Chat } from "../components/Chat"
 import "../components/css/EditorPage.css"
 import QuestionCard from "../components/QuestionCard"
+import { SocketContext } from "../socket"
 
 function EditorPage() {
   let navigate = useNavigate()
-
-  useEffect(() => {
-    const unloadCallback = (event) => {
-      event.preventDefault()
-      event.returnValue = ""
-      return ""
-    }
-
-    window.addEventListener("beforeunload", unloadCallback)
-    return () => window.removeEventListener("beforeunload", unloadCallback)
-  }, [])
+  const socket = useContext(SocketContext)
 
   const leaveRoom = () => {
     navigate("../")
+    socket.emit("leave_room")
   }
 
   return (

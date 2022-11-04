@@ -18,6 +18,7 @@ import ChangePasswordPage from "./pages/ChangePasswordPage"
 import QuestionsPage from "./pages/QuestionsPage"
 import TopicPage from "./pages/TopicPage"
 import LandingPage from "./pages/LandingPage"
+import { SocketProvider, SocketContext } from "./socket"
 
 function App() {
   const { user, saveUser, removeUser } = useUser()
@@ -25,55 +26,57 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
-        <NavBar user={user} />
-        <Routes>
-          <Route
-            path="/"
-            element={user ? <HomePage /> : <LandingPage></LandingPage>}
-          />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/problems" element={<ProblemPage />} />
-          <Route path="/topic/:difficulty" element={<TopicPage />} />
-          <Route path="/signup" element={<ContributePage />} />
-          <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
-          <Route
-            path="/matching/:difficulty/:topic"
-            element={<MatchingPage />}
-          />
-          <Route path="/editor" element={<EditorPage />} />
-          <Route
-            path="/questions"
-            element={
-              user && user.role !== "Student" ? (
-                <QuestionsPage></QuestionsPage>
-              ) : (
-                <Navigate to="/"></Navigate>
-              )
-            }
-          ></Route>
-          <Route
-            path="/profile"
-            element={
-              user ? (
-                <ProfilePage user={user} removeUser={removeUser} />
-              ) : (
-                <Navigate to="/"></Navigate>
-              )
-            }
-          />
-          <Route
-            path="/change-password"
-            element={
-              user ? (
-                <ChangePasswordPage user={user}></ChangePasswordPage>
-              ) : (
-                <Navigate to="/"></Navigate>
-              )
-            }
-          ></Route>
-        </Routes>
-      </Router>
+      <SocketProvider>
+        <Router>
+          <NavBar user={user} />
+          <Routes>
+            <Route
+              path="/"
+              element={user ? <HomePage /> : <LandingPage></LandingPage>}
+            />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/problems" element={<ProblemPage />} />
+            <Route path="/topic/:difficulty" element={<TopicPage />} />
+            <Route path="/signup" element={<ContributePage />} />
+            <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
+            <Route
+              path="/matching/:difficulty/:topic"
+              element={<MatchingPage />}
+            />
+            <Route path="/editor" element={<EditorPage />} />
+            <Route
+              path="/questions"
+              element={
+                user && user.role !== "Student" ? (
+                  <QuestionsPage></QuestionsPage>
+                ) : (
+                  <Navigate to="/"></Navigate>
+                )
+              }
+            ></Route>
+            <Route
+              path="/profile"
+              element={
+                user ? (
+                  <ProfilePage user={user} removeUser={removeUser} />
+                ) : (
+                  <Navigate to="/"></Navigate>
+                )
+              }
+            />
+            <Route
+              path="/change-password"
+              element={
+                user ? (
+                  <ChangePasswordPage user={user}></ChangePasswordPage>
+                ) : (
+                  <Navigate to="/"></Navigate>
+                )
+              }
+            ></Route>
+          </Routes>
+        </Router>
+      </SocketProvider>
     </div>
   )
 }

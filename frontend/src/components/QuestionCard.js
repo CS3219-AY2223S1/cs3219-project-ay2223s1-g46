@@ -1,21 +1,22 @@
-import {React, useState, useEffect} from "react"
+import {React, useState, useEffect, useContext} from "react"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
 import Typography from "@mui/material/Typography"
-import io from "socket.io-client"
+import { SocketContext } from "../socket"
 
 export default function QuestionCard() {
+  const socket = useContext(SocketContext)
   const [ topic, setTopic ] = useState("")
   const [ difficulty, setDifficulty ] = useState("")
   const [ text, setText ] = useState("")
   const [ name, setName ] = useState("")  
-
-  const socket = io('http://localhost:8002/', {
-    transports: ['websocket'],
-  })
   
   useEffect(() => {
+    socket.emit("sendQuestion")
+    
     socket.on('question', (question) => {
+      console.log("a")
+      console.log(question)
       setTopic(question.topic)
       setName(question.name)
       setDifficulty(question.difficulty)
