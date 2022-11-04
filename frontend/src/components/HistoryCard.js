@@ -93,6 +93,12 @@ const HistoryCard = ({
           <Box padding={2} bgcolor="#DAF3F1" borderRadius={2}>
             {questionText}
           </Box>
+          <Box paddingY={2}>
+            {/* TODO: check data type */}
+            {/* <code>
+              <TextField fullWidth value={codeHistory} readOnly></TextField>
+            </code> */}
+          </Box>
         </CardContent>
       </Collapse>
     </Card>
