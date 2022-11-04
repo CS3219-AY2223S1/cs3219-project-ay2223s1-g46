@@ -13,6 +13,7 @@ import {
   Collapse,
   IconButton,
   styled,
+  TextField,
 } from "@mui/material"
 import { Box } from "@mui/system"
 import { useState } from "react"
@@ -53,6 +54,16 @@ const HistoryCard = ({
   //     minute: "numeric",
   //     hour12: true,
   //   }).format(formattedDate)
+
+  const formatCodeHistory = () => {
+    let code = codeHistory.replaceAll("\\n", "\n")
+    code = code.replaceAll("\\t", "\t")
+    code = code.replaceAll("\\", "")
+    code = code.replaceAll("    ", "\t")
+    return code.slice(1, -1)
+  }
+
+  const formattedCodeHistory = formatCodeHistory()
 
   const handleExpandClick = () => {
     setExpanded(!expanded)
@@ -95,9 +106,14 @@ const HistoryCard = ({
           </Box>
           <Box paddingY={2}>
             {/* TODO: check data type */}
-            {/* <code>
-              <TextField fullWidth value={codeHistory} readOnly></TextField>
-            </code> */}
+            <code>
+              <TextField
+                fullWidth
+                value={formattedCodeHistory}
+                multiline
+                readOnly
+              ></TextField>
+            </code>
           </Box>
         </CardContent>
       </Collapse>

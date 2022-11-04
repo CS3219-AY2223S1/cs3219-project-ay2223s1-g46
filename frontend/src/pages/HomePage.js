@@ -14,7 +14,7 @@ const HomePage = () => {
     axios
       .get(URL_HISTORY_SVC)
       .then((response) => {
-        setMatches(response.data.userHistory)
+        setMatches(response.data.userHistory.reverse())
         console.log(response.data.userHistory)
       })
       .catch((error) => {
