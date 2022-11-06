@@ -48,7 +48,7 @@ const MatchingPage = () => {
   }, [])
 
   const rematch = () => {
-    navigate("../matching")
+    navigate("../problems")
   }
 
   return (
