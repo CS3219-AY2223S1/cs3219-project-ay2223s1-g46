@@ -15,4 +15,11 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   )
+  app.use(
+    "/history-service",
+    createProxyMiddleware({
+      target: "http://localhost:8003",
+      changeOrigin: true,
+    })
+  )
 }

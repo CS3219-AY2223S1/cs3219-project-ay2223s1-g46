@@ -17,8 +17,8 @@ import useUser from "./hooks/useUser"
 import ChangePasswordPage from "./pages/ChangePasswordPage"
 import QuestionsPage from "./pages/QuestionsPage"
 import TopicPage from "./pages/TopicPage"
-import {SocketProvider,SocketContext} from "./socket"
-
+import LandingPage from "./pages/LandingPage"
+import { SocketProvider, SocketContext } from "./socket"
 
 function App() {
   const { user, saveUser, removeUser } = useUser()
@@ -30,13 +30,19 @@ function App() {
         <Router>
           <NavBar user={user} />
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/"
+              element={user ? <HomePage /> : <LandingPage></LandingPage>}
+            />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/problems" element={<ProblemPage />} />
             <Route path="/topic/:difficulty" element={<TopicPage />} />
             <Route path="/signup" element={<ContributePage />} />
             <Route path="/login" element={<LoginPage saveUser={saveUser} />} />
-            <Route path="/matching/:difficulty/:topic" element={<MatchingPage />} />
+            <Route
+              path="/matching/:difficulty/:topic"
+              element={<MatchingPage />}
+            />
             <Route path="/editor" element={<EditorPage />} />
             <Route
               path="/questions"
