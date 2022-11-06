@@ -13,6 +13,7 @@ function EditorPage() {
 
   const leaveRoom = () => {
     navigate("../")
+    socket.emit("message", ({ message: " The paired user has left ", name: "Admin" }))
     socket.emit("leave_room")
   }
 
