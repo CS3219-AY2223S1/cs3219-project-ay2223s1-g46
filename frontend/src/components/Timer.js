@@ -1,13 +1,10 @@
 import React, {useState, useRef, useEffect} from "react";
-import { Navigate, useNavigate } from "react-router";
-import io from "socket.io-client"
 import './css/Timer.css';
 
 function Timer() {
   const intervalRef = useRef(null)
-  let navigate = useNavigate()
   const [timer, setTimer] = useState("00:00:00")
-
+ 
   function getTimeRemaining(endTime) {
     const total = Date.parse(endTime) - Date.parse(new Date())
     const seconds = Math.floor((total / 1000) % 60)

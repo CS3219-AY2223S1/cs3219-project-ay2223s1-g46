@@ -8,7 +8,7 @@ const socket = io('http://localhost:8002/', {
 const SocketContext = createContext(socket);
 
   socket.on("connect", () => {
-    console.log("someone connected: ", socket?.id);
+    console.log("User socket id: ", socket?.id);
   });
 
 const SocketProvider = ({ children }) => {

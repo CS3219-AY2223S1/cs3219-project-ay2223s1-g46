@@ -4,7 +4,6 @@ import "../components/css/MatchingPage.css"
 import { useNavigate, useParams } from "react-router-dom"
 import { Button, Box } from "@mui/material"
 import useUser from "../hooks/useUser"
-import io, { Socket } from "socket.io-client"
 import { SocketContext } from "../socket"
 
 const MatchingPage = () => {
@@ -41,10 +40,6 @@ const MatchingPage = () => {
       socket.off("match_user")
       socket.off("matchFail")
     }
-
-    socket.on("question", (question) => {
-      console.log("a")
-    })
   }, [])
 
   const rematch = () => {

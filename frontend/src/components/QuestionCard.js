@@ -15,15 +15,11 @@ export default function QuestionCard() {
     socket.emit("sendQuestion")
     
     socket.on('question', (question) => {
-      console.log("a")
-      console.log(question)
       setTopic(question.topic)
       setName(question.name)
       setDifficulty(question.difficulty)
       setText(question.text)
     })
-    console.log(topic)
-    console.log(text)
     return () => {
       socket.off('question')
     }
