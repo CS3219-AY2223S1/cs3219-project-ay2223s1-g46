@@ -1,7 +1,6 @@
 import { TextField,Button,Grid,Paper,ListItem,ListItemText, List } from "@mui/material"
 import React, { useEffect, useState, useContext} from "react"
 import SendIcon from '@mui/icons-material/Send';
-import io from "socket.io-client"
 import useUser from "../hooks/useUser"
 import { SocketContext } from "../socket";
 
@@ -13,13 +12,11 @@ export const Chat = () => {
     
 
 	useEffect(() => {
-		console.log(socket?.id)
 		socket.on("message", ({ name, message }) => {
 			setChat([ ...chat, { name, message } ])
 		})
 
 		socket.on('question', (question) => {
-			console.log("a")
 		  })
 		return () => {
 			socket.off('message')

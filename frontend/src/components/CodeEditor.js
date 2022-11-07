@@ -15,11 +15,8 @@ export const CodeEditor = () => {
       theme: 'material-ocean',
       mode: 'javascript',
     })
-    console.log((socket?.id))
-
 
     socket.on('code', (code) => {
-      console.log(code.code)
       const currentCursor = (editor.getCursor())
       editor.setValue(code.code)
       editor.setCursor(currentCursor)
@@ -28,7 +25,6 @@ export const CodeEditor = () => {
     editor.on('change', (instance, changes) => {
       const { origin } = changes
       if (origin !== 'setValue') {
-        console.log(instance.getValue())
         socket.emit('code', instance.getValue())
       }
     })
@@ -36,10 +32,6 @@ export const CodeEditor = () => {
     editor.on('cursorActivity', (instance) => {
       console.log(instance.cursorCoords())
     })
-
-    socket.on('question', (question) => {
-			console.log("a")
-		  })
 
     return () => {
       socket.off('code')
