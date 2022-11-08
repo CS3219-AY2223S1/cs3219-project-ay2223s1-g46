@@ -1,14 +1,47 @@
-# CS3219-AY22-23-Project-Skeleton
+# CS3219-AY22-23-Project-PeerPrep-Grp46
+A web application for students to find peers to practice whiteboard-style interview 
+questions together. 
 
-This is a template repository for CS3219 project.
+Project report: [https://docs.google.com/document/d/1ijD2ZhIEtpg_gh-GeSEAlhdScYGvm4P-GzsLfZIJ4Ks/edit?usp=sharing]
 
-## User Service
-1. Rename `.env.sample` file to `.env`.
-2. Create a Cloud DB URL using Mongo Atlas.
-3. Enter the DB URL created as `DB_CLOUD_URI` in `.env` file.
-4. Install npm packages using `npm i`.
-5. Run User Service using `npm run dev`.
+## How to setup 
+Clone this repository and open it in your preferred code editor or IDE 
 
-## Frontend
-1. Install npm packages using `npm i`.
-2. Run Frontend using `npm start`.
+### User Service Setup
+```
+cd user-service
+npm install
+npm start
+```
+### Matching Service Setup
+```
+cd matching-service
+npm install
+npm start
+```
+### Question Service Setup
+```
+cd question-service
+npm install
+npm start
+```
+### History Service Setup
+```
+cd history-service
+npm install
+npm start
+```
+
+### Redis Setup (Requires Docker
+```
+docker run --name=redis --detach=true 
+```
+
+### Frontend Setup
+```
+cd frontend
+npm install
+npm run client-install
+```
+
+
