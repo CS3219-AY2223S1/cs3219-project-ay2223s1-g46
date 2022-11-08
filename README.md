@@ -2,7 +2,7 @@
 A web application for students to find peers to practice whiteboard-style interview 
 questions together. 
 
-Project report: [https://docs.google.com/document/d/1ijD2ZhIEtpg_gh-GeSEAlhdScYGvm4P-GzsLfZIJ4Ks/edit?usp=sharing]
+Project report [here] (CS3219 Group 46 Project Report.pdf)
 
 ## How to setup 
 Clone this repository and open it in your preferred code editor or IDE 
@@ -34,7 +34,7 @@ npm start
 
 ### Redis Setup (Requires Docker
 ```
-docker run --name=redis --detach=true 
+docker run --name=redis --detach=true --publish=6379:6379 redis
 ```
 
 ### Frontend Setup
