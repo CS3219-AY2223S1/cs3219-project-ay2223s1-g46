@@ -14,6 +14,7 @@ npm install
 npm start
 ```
 ### Matching Service Setup
+Beforehand, start up the Redis cache first.
 ```
 cd matching-service
 npm install
