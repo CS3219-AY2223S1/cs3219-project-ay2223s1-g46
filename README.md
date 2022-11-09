@@ -13,6 +13,10 @@ cd user-service
 npm install
 npm start
 ```
+### Redis Setup (Requires Docker)
+```
+docker run --name=redis --detach=true --publish=6379:6379 redis
+```
 ### Matching Service Setup
 Beforehand, start up the Redis cache first.
 ```
@@ -32,12 +36,6 @@ cd history-service
 npm install
 npm start
 ```
-
-### Redis Setup (Requires Docker
-```
-docker run --name=redis --detach=true --publish=6379:6379 redis
-```
-
 ### Frontend Setup
 ```
 cd frontend
