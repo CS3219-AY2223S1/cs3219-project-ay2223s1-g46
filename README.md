@@ -2,7 +2,7 @@
 A web application for students to find peers to practice whiteboard-style interview 
 questions together. 
 
-Project report:CS3219 Group 46 Project Report.pdf
+<a href="46-ProjectReport.pdf" target="_blank">Project report</a>
 
 ## How to setup 
 Clone this repository and open it in your preferred code editor or IDE 
